@@ -38,10 +38,12 @@ const statusColors: Record<string, string> = {
 
 function parseStatusMessage(message: string): SageStatus {
   // Parse: "💻 coding: Building component | Model: claude-opus-4-5 | Project: Dashboard V2"
-  const emojiMatch = message.match(/^([\p{Emoji}])\s*/u)
-  const emoji = emojiMatch ? emojiMatch[1] : '🤖'
+  // Extract emoji (first character if it's not alphanumeric)
+  const firstChar = message.charAt(0)
+  const emoji = /[a-zA-Z0-9]/.test(firstChar) ? '🤖' : firstChar
   
-  const statusMatch = message.match(/^[\p{Emoji}]?\s*(\w+):/u)
+  // Extract status word after emoji
+  const statusMatch = message.match(/^\S+\s*(\w+):/)
   const status = statusMatch ? statusMatch[1].toLowerCase() : 'idle'
   
   const descMatch = message.match(/:\s*([^|]+)/)
