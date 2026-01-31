@@ -6,7 +6,7 @@ import { AgentRun } from '@/types'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
 import { LiveIndicator } from './LiveIndicator'
-import { formatDuration, formatCost, formatTokens, formatRelativeTime } from '@/lib/formatters'
+import { formatDuration, formatCost, formatTokens, formatRelativeTime, estimateCost } from '@/lib/formatters'
 import { cn } from '@/lib/utils'
 
 interface AgentCardProps {
@@ -28,6 +28,10 @@ export function AgentCard({ agent }: AgentCardProps) {
   const elapsedMs = agent.status === 'active' 
     ? now.getTime() - startedAt.getTime() 
     : (agent.completed_at ? new Date(agent.completed_at).getTime() - startedAt.getTime() : 0)
+
+  // Use actual cost if available, otherwise estimate from tokens
+  const displayCost = agent.cost > 0 ? agent.cost : estimateCost(agent.tokens_used, agent.model)
+  const isEstimatedCost = agent.cost === 0 && displayCost > 0
 
   return (
     <Card
@@ -69,7 +73,9 @@ export function AgentCard({ agent }: AgentCardProps) {
           <span>•</span>
           <span><span className="text-text-secondary">{formatTokens(agent.tokens_used)}</span> tokens</span>
           <span>•</span>
-          <span><span className="text-text-secondary">{formatCost(agent.cost)}</span></span>
+          <span className={isEstimatedCost ? 'text-text-muted italic' : ''}>
+            <span className="text-text-secondary">{formatCost(displayCost, isEstimatedCost)}</span>
+          </span>
         </div>
 
         {/* Description */}

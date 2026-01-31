@@ -25,6 +25,7 @@ export interface Task {
 export interface AgentRun {
   id: string
   name: string
+  model?: string | null
   status: 'idle' | 'active' | 'completed' | 'failed'
   progress: number
   project_id?: string | null
