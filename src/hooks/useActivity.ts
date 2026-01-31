@@ -21,7 +21,8 @@ export function useActivity(eventTypes?: string | string[]) {
         if (Array.isArray(eventTypes)) {
           query = query.in('event_type', eventTypes)
         } else if (eventTypes !== 'all') {
-          query = query.eq('event_type', eventTypes)
+          // Use ilike for prefix matching (e.g., 'agent' matches 'agent_started', 'agent_completed')
+          query = query.ilike('event_type', `${eventTypes}%`)
         }
       }
 

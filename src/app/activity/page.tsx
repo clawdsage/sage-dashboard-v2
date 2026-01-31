@@ -28,14 +28,15 @@ export default function ActivityPage() {
     // Add more navigation logic as needed
   }
 
-  const getEventTypeFilter = (filter: string): string[] | undefined => {
+  const getEventTypeFilter = (filter: string): string | undefined => {
+    // Return category prefix for filtering
     switch (filter) {
       case 'agent':
-        return ['agent_started', 'agent_completed', 'agent_failed']
+        return 'agent'
       case 'project':
-        return ['project_created', 'project_updated']
+        return 'project'
       case 'review':
-        return ['review_approved', 'review_rejected']
+        return 'review'
       default:
         return undefined
     }
