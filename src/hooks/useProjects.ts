@@ -1,13 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { Database } from '@/lib/supabase'
-
-type Project = Database['public']['Tables']['projects']['Row'] & {
-  task_count: number
-  completed_tasks: number
-  in_progress_tasks: number
-}
+import type { Project, Task } from '@/types/projects'
 
 export function useProjects() {
   const queryClient = useQueryClient()
@@ -15,44 +9,18 @@ export function useProjects() {
   const query = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
-      // Fetch projects with task aggregates
-      const { data: projects, error: projectsError } = await supabase
+      const { data, error } = await supabase
         .from('projects')
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (projectsError) throw projectsError
-
-      // Fetch task counts for each project
-      const projectsWithCounts = await Promise.all(
-        projects.map(async (project) => {
-          const { data: tasks, error: tasksError } = await supabase
-            .from('tasks')
-            .select('status')
-            .eq('project_id', project.id)
-
-          if (tasksError) throw tasksError
-
-          const task_count = tasks.length
-          const completed_tasks = tasks.filter(t => t.status === 'done').length
-          const in_progress_tasks = tasks.filter(t => t.status === 'in_progress').length
-
-          return {
-            ...project,
-            task_count,
-            completed_tasks,
-            in_progress_tasks,
-          }
-        })
-      )
-
-      return projectsWithCounts as Project[]
+      if (error) throw error
+      return data as Project[]
     },
   })
 
-  // Real-time subscriptions
   useEffect(() => {
-    const projectsChannel = supabase
+    const channel = supabase
       .channel('projects_changes')
       .on(
         'postgres_changes',
@@ -61,23 +29,85 @@ export function useProjects() {
           schema: 'public',
           table: 'projects',
         },
-        () => {
+        (payload) => {
           queryClient.invalidateQueries({ queryKey: ['projects'] })
         }
       )
       .subscribe()
 
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [queryClient])
+
+  return {
+    projects: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+  }
+}
+
+export function useProject(id: string) {
+  const queryClient = useQueryClient()
+
+  const query = useQuery({
+    queryKey: ['project', id],
+    queryFn: async () => {
+      const { data: project, error: projectError } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', id)
+        .single()
+
+      if (projectError) throw projectError
+
+      const { data: tasks, error: tasksError } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('project_id', id)
+        .order('order_index', { ascending: true })
+
+      if (tasksError) throw tasksError
+
+      return {
+        ...project,
+        tasks: tasks as Task[],
+      } as Project & { tasks: Task[] }
+    },
+    enabled: !!id,
+  })
+
+  useEffect(() => {
+    if (!id) return
+
+    const projectsChannel = supabase
+      .channel(`project_${id}_changes`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'projects',
+          filter: `id=eq.${id}`,
+        },
+        (payload) => {
+          queryClient.invalidateQueries({ queryKey: ['project', id] })
+        }
+      )
+      .subscribe()
+
     const tasksChannel = supabase
-      .channel('tasks_changes')
+      .channel(`project_${id}_tasks_changes`)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
           table: 'tasks',
+          filter: `project_id=eq.${id}`,
         },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['projects'] })
+        (payload) => {
+          queryClient.invalidateQueries({ queryKey: ['project', id] })
         }
       )
       .subscribe()
@@ -86,11 +116,20 @@ export function useProjects() {
       supabase.removeChannel(projectsChannel)
       supabase.removeChannel(tasksChannel)
     }
-  }, [queryClient])
+  }, [queryClient, id])
 
-  // Mutations
-  const createProject = useMutation({
-    mutationFn: async (project: Database['public']['Tables']['projects']['Insert']) => {
+  return {
+    project: query.data,
+    isLoading: query.isLoading,
+    error: query.error,
+  }
+}
+
+export function useCreateProject() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
       const { data, error } = await supabase
         .from('projects')
         .insert(project)
@@ -98,15 +137,19 @@ export function useProjects() {
         .single()
 
       if (error) throw error
-      return data
+      return data as Project
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] })
     },
   })
+}
 
-  const updateProject = useMutation({
-    mutationFn: async ({ id, updates }: { id: string, updates: Database['public']['Tables']['projects']['Update'] }) => {
+export function useUpdateProject() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ id, updates }: { id: string, updates: Partial<Project> }) => {
       const { data, error } = await supabase
         .from('projects')
         .update(updates)
@@ -115,14 +158,19 @@ export function useProjects() {
         .single()
 
       if (error) throw error
-      return data
+      return data as Project
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] })
+      queryClient.invalidateQueries({ queryKey: ['project', data.id] })
     },
   })
+}
 
-  const deleteProject = useMutation({
+export function useDeleteProject() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
         .from('projects')
@@ -135,13 +183,4 @@ export function useProjects() {
       queryClient.invalidateQueries({ queryKey: ['projects'] })
     },
   })
-
-  return {
-    projects: query.data || [],
-    isLoading: query.isLoading,
-    error: query.error,
-    createProject,
-    updateProject,
-    deleteProject,
-  }
 }
