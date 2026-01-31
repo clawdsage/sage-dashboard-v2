@@ -17,6 +17,7 @@ const navigation = [
   { name: 'Agents', href: '/agents', icon: Users },
   { name: 'Projects', href: '/projects', icon: FolderOpen },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+  { name: 'Activity', href: '/activity', icon: Activity },
   { name: 'Review', href: '/review', icon: CheckCircle },
 ]
 

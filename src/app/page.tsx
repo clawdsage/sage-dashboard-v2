@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useAgents } from '@/hooks/useAgents'
 import { useReviewQueue } from '@/hooks/useReviewQueue'
 import { AgentList } from '@/components/agents/AgentList'
+import { ActivityFeed } from '@/components/activity/ActivityFeed'
 import { Card } from '@/components/ui/Card'
 import { AlertTriangle } from 'lucide-react'
 
@@ -56,14 +57,7 @@ export default function DashboardPage() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="text-xl font-semibold mb-4">RECENT ACTIVITY</h3>
-          <div className="space-y-2">
-            <div className="text-sm">• Agent completed task</div>
-            <div className="text-sm">• Task created</div>
-            <div className="text-sm">• Project updated</div>
-          </div>
-        </Card>
+        <ActivityFeed limit={5} />
 
         <Card className="p-6">
           <h3 className="text-xl font-semibold mb-4">TODAY'S METRICS</h3>
