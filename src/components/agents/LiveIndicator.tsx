@@ -17,11 +17,11 @@ export function LiveIndicator({ status, className }: LiveIndicatorProps) {
     )
   }
 
-  // Completed: small checkmark icon
+  // Completed: muted gray checkmark (not green - save green for active only)
   if (status === 'completed') {
     return (
-      <div className={cn('w-4 h-4 rounded-full bg-accent-green/20 flex items-center justify-center', className)}>
-        <Check className="w-3 h-3 text-accent-green" />
+      <div className={cn('w-4 h-4 rounded-full bg-text-muted/20 flex items-center justify-center', className)}>
+        <Check className="w-3 h-3 text-text-muted" />
       </div>
     )
   }
