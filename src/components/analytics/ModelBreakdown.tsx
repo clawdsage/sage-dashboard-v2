@@ -38,7 +38,7 @@ export function ModelBreakdown({ data }: ModelBreakdownProps) {
             wrapperStyle={{ color: '#a1a1aa' }}
             formatter={(value, entry) => (
               <span style={{ color: '#fafafa' }}>
-                {entry.payload.model}: ${entry.payload.cost.toFixed(4)}
+                {entry.payload ? `${entry.payload.model}: $${entry.payload.cost.toFixed(4)}` : value}
               </span>
             )}
           />
