@@ -21,6 +21,33 @@ export interface Task {
   updated_at: string
 }
 
+export interface Ticket {
+  id: string
+  type: 'review' | 'decision' | 'approval' | 'info'
+  title: string
+  description: string
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  status: 'pending' | 'approved' | 'rejected' | 'deferred'
+  project_id?: string
+  task_id?: string
+  created_at: string
+  updated_at: string
+  created_by: string
+  reviewed_at?: string
+  reviewed_by?: string
+  review_comment?: string
+  history?: TicketHistory[]
+}
+
+export interface TicketHistory {
+  id: string
+  ticket_id: string
+  action: 'created' | 'approved' | 'rejected' | 'deferred' | 'commented'
+  comment?: string
+  created_at: string
+  created_by: string
+}
+
 // Agent types (matches subagent_runs table)
 export interface AgentRun {
   id: string

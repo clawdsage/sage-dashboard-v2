@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
-import { X } from 'lucide-react'
+import { X, Plus, X as XIcon } from 'lucide-react'
 import type { Database } from '@/lib/supabase'
 
 interface CreateProjectModalProps {
   isOpen: boolean
   onClose: () => void
-  onCreate: (project: Database['public']['Tables']['projects']['Insert']) => void
+  onCreate: (project: Database['public']['Tables']['projects']['Insert'] & { priority?: string; due_date?: string; tags?: string[]; owner?: string }) => void
   isLoading?: boolean
-  initialData?: Partial<Database['public']['Tables']['projects']['Row']>
+  initialData?: Partial<Database['public']['Tables']['projects']['Row'] & { priority?: string; due_date?: string; tags?: string[]; owner?: string }>
 }
 
 const COLORS = [
@@ -23,10 +23,27 @@ const COLORS = [
   '#f97316', // orange
 ]
 
+const PRIORITIES = [
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+]
+
+const OWNERS = [
+  { value: 'sage', label: 'Sage' },
+  { value: 'tim', label: 'Tim' },
+  { value: 'both', label: 'Both' },
+]
+
 export function CreateProjectModal({ isOpen, onClose, onCreate, isLoading, initialData }: CreateProjectModalProps) {
   const [name, setName] = useState(initialData?.name || '')
   const [description, setDescription] = useState(initialData?.description || '')
   const [selectedColor, setSelectedColor] = useState(initialData?.color || COLORS[0])
+  const [priority, setPriority] = useState(initialData?.priority || 'medium')
+  const [dueDate, setDueDate] = useState(initialData?.due_date || '')
+  const [tags, setTags] = useState<string[]>(initialData?.tags || [])
+  const [tagInput, setTagInput] = useState('')
+  const [owner, setOwner] = useState(initialData?.owner || 'sage')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,13 +54,33 @@ export function CreateProjectModal({ isOpen, onClose, onCreate, isLoading, initi
       description: description.trim() || null,
       color: selectedColor,
       status: initialData?.status || 'active',
+      priority,
+      due_date: dueDate || null,
+      tags,
+      owner,
     })
 
     // Reset form
     setName('')
     setDescription('')
     setSelectedColor(COLORS[0])
+    setPriority('medium')
+    setDueDate('')
+    setTags([])
+    setTagInput('')
+    setOwner('sage')
     onClose()
+  }
+
+  const addTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()])
+      setTagInput('')
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove))
   }
 
   // Reset form when modal opens with initial data
@@ -52,10 +89,19 @@ export function CreateProjectModal({ isOpen, onClose, onCreate, isLoading, initi
       setName(initialData.name || '')
       setDescription(initialData.description || '')
       setSelectedColor(initialData.color || COLORS[0])
+      setPriority(initialData.priority || 'medium')
+      setDueDate(initialData.due_date || '')
+      setTags(initialData.tags || [])
+      setOwner(initialData.owner || 'sage')
     } else if (isOpen) {
       setName('')
       setDescription('')
       setSelectedColor(COLORS[0])
+      setPriority('medium')
+      setDueDate('')
+      setTags([])
+      setTagInput('')
+      setOwner('sage')
     }
   }, [isOpen, initialData])
 
@@ -119,6 +165,74 @@ export function CreateProjectModal({ isOpen, onClose, onCreate, isLoading, initi
                   />
                 </div>
 
+                {/* Priority */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Priority
+                  </label>
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                    className="w-full px-3 py-2 bg-bg-primary border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue"
+                  >
+                    {PRIORITIES.map((p) => (
+                      <option key={p.value} value={p.value}>
+                        {p.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Due Date */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Due Date
+                  </label>
+                  <input
+                    type="date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                    className="w-full px-3 py-2 bg-bg-primary border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue"
+                  />
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Tags
+                  </label>
+                  <div className="flex space-x-2 mb-2">
+                    <input
+                      type="text"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                      className="flex-1 px-3 py-2 bg-bg-primary border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue"
+                      placeholder="Add a tag"
+                    />
+                    <Button type="button" onClick={addTag} size="sm">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-2 py-1 bg-bg-tertiary text-text-primary text-sm rounded-md"
+                      >
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="ml-2 text-text-muted hover:text-text-primary"
+                        >
+                          <XIcon className="h-3 w-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Color Picker */}
                 <div>
                   <label className="block text-sm font-medium mb-2">
@@ -141,13 +255,31 @@ export function CreateProjectModal({ isOpen, onClose, onCreate, isLoading, initi
                   </div>
                 </div>
 
+                {/* Owner */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Owner
+                  </label>
+                  <select
+                    value={owner}
+                    onChange={(e) => setOwner(e.target.value)}
+                    className="w-full px-3 py-2 bg-bg-primary border border-border-default rounded-md focus:outline-none focus:ring-2 focus:ring-accent-blue"
+                  >
+                    {OWNERS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Actions */}
                 <div className="flex justify-end space-x-3 pt-4">
                   <Button type="button" variant="outline" onClick={onClose}>
                     Cancel
                   </Button>
                   <Button type="submit" disabled={!name.trim() || isLoading}>
-                    {isLoading ? 'Creating...' : 'Create Project'}
+                    {isLoading ? 'Creating...' : initialData ? 'Update Project' : 'Create Project'}
                   </Button>
                 </div>
               </form>

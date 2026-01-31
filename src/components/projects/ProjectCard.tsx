@@ -1,25 +1,25 @@
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import { Card, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
-import { Edit, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
 import type { Database } from '@/lib/supabase'
 
 type Project = Database['public']['Tables']['projects']['Row'] & {
   task_count: number
   completed_tasks: number
   in_progress_tasks: number
+  due_date?: string
+  priority?: string
+  tags?: string[]
+  owner?: string
 }
 
 interface ProjectCardProps {
   project: Project
-  onEdit: (project: Project) => void
-  onDelete: (id: string) => void
-  onViewTasks: (id: string) => void
 }
 
-export function ProjectCard({ project, onEdit, onDelete, onViewTasks }: ProjectCardProps) {
-  const [expanded, setExpanded] = useState(false)
+export function ProjectCard({ project }: ProjectCardProps) {
+  const router = useRouter()
 
   const progress = project.task_count > 0 ? (project.completed_tasks / project.task_count) * 100 : 0
 
@@ -36,79 +36,97 @@ export function ProjectCard({ project, onEdit, onDelete, onViewTasks }: ProjectC
     }
   }
 
+  const getPriorityBadge = (priority?: string) => {
+    switch (priority) {
+      case 'high':
+        return <Badge variant="danger">High</Badge>
+      case 'medium':
+        return <Badge variant="warning">Medium</Badge>
+      case 'low':
+        return <Badge variant="secondary">Low</Badge>
+      default:
+        return null
+    }
+  }
+
+  const getDueDateColor = (dueDate?: string) => {
+    if (!dueDate) return 'text-text-muted'
+    const now = new Date()
+    const due = new Date(dueDate)
+    const diffDays = Math.ceil((due.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    if (diffDays < 0) return 'text-text-red'
+    if (diffDays <= 3) return 'text-accent-amber'
+    return 'text-text-muted'
+  }
+
+  const handleClick = () => {
+    router.push(`/projects/${project.id}`)
+  }
+
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: project.color || '#3b82f6' }}
-            />
-            <CardTitle className="text-lg">{project.name}</CardTitle>
-          </div>
-          <div className="flex items-center space-x-2">
-            {getStatusBadge(project.status)}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setExpanded(!expanded)}
-            >
-              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {/* Task Counts */}
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-text-secondary">
-              {project.completed_tasks} / {project.task_count} tasks completed
-            </span>
-            <span className="text-text-muted">
-              {project.in_progress_tasks} in progress
-            </span>
-          </div>
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <Card
+        className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
+        onClick={handleClick}
+      >
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            {/* Header: Name, Color, Status */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: project.color || '#3b82f6' }}
+                />
+                <h3 className="text-lg font-semibold">{project.name}</h3>
+              </div>
+              {getStatusBadge(project.status)}
+            </div>
 
-          {/* Progress Bar */}
-          <div className="w-full bg-bg-tertiary rounded-full h-2">
-            <div
-              className="bg-accent-blue h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          {expanded && (
-            <div className="pt-2 border-t border-border-subtle">
-              {project.description && (
-                <p className="text-sm text-text-muted mb-4">{project.description}</p>
-              )}
-              <div className="flex items-center justify-between">
-                <Button variant="outline" size="sm" onClick={() => onViewTasks(project.id)}>
-                  View Tasks
-                </Button>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(project)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(project.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+            {/* Progress Bar */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-text-secondary">
+                  {project.completed_tasks} / {project.task_count} tasks
+                </span>
+                <span className="text-text-muted">
+                  {Math.round(progress)}%
+                </span>
+              </div>
+              <div className="w-full bg-bg-tertiary rounded-full h-2">
+                <motion.div
+                  className="bg-accent-blue h-2 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                />
               </div>
             </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+
+            {/* Due Date */}
+            {project.due_date && (
+              <div className={`text-sm ${getDueDateColor(project.due_date)}`}>
+                Due: {new Date(project.due_date).toLocaleDateString()}
+              </div>
+            )}
+
+            {/* Priority and Tags */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                {getPriorityBadge(project.priority)}
+                {project.tags && project.tags.map((tag, index) => (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }
