@@ -55,4 +55,10 @@
 
 ## Phase 2: Live Agents (Starting)
 [11:05] Spawning Coder for Live Agents feature...
+[11:06] Committed docs: 6f3834b
+[11:07] Note: Schema extensions (model, session_key columns) need manual SQL run
+       - File: supabase/schema_extensions.sql
+       - Run in Supabase Dashboard > SQL Editor
+       - Not blocking for MVP (nice to have)
+[11:07] Phase 2 sub-agent running: Live Agents feature
 

@@ -81,8 +81,16 @@ const config: Config = {
         'gradient-blue': 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
         'gradient-glow': 'radial-gradient(circle at center, rgba(59,130,246,0.15) 0%, transparent 70%)',
       },
+      lineHeight: {
+        'none': '1',
+        'tight': '1.25',
+        'snug': '1.375',
+        'normal': '1.5',
+        'relaxed': '1.625',
+        'loose': '2',
+      },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/line-clamp')],
 }
 export default config
