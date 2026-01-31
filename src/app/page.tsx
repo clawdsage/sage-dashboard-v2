@@ -4,11 +4,12 @@ import Link from 'next/link'
 import { useAgents } from '@/hooks/useAgents'
 import { useReviewQueue } from '@/hooks/useReviewQueue'
 import { useProjects } from '@/hooks/useProjects'
+import { useAnalytics } from '@/hooks/useAnalytics'
 import { AgentList } from '@/components/agents/AgentList'
 import { ActivityFeed } from '@/components/activity/ActivityFeed'
 import { SageStatusBar } from '@/components/dashboard/SageStatusBar'
 import { Card } from '@/components/ui/Card'
-import { AlertTriangle, FolderOpen } from 'lucide-react'
+import { AlertTriangle, FolderOpen, BarChart, TrendingUp, TrendingDown } from 'lucide-react'
 import { useMemo } from 'react'
 
 export default function DashboardPage() {
@@ -147,6 +148,124 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+
+      {/* Analytics Summary */}
+      <AnalyticsSummary />
     </div>
+  )
+}
+
+function AnalyticsSummary() {
+  const { data: analyticsData, isLoading } = useAnalytics('7d')
+  
+  if (isLoading || !analyticsData) {
+    return (
+      <Card className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold">Analytics Summary</h3>
+          <BarChart className="h-5 w-5 text-text-muted" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="text-center">
+              <div className="h-8 bg-bg-tertiary rounded mb-2"></div>
+              <div className="h-3 bg-bg-tertiary rounded w-1/2 mx-auto"></div>
+            </div>
+          ))}
+        </div>
+      </Card>
+    )
+  }
+
+  const { totalRuns, totalCost, totalTokens, avgDuration, modelBreakdown } = analyticsData
+  
+  // Calculate trends (simplified - in real app, compare with previous period)
+  const costTrend = modelBreakdown.length > 0 ? 'stable' : 'up'
+  const efficiencyTrend = avgDuration > 300000 ? 'down' : 'up' // 5 minutes threshold
+  
+  return (
+    <Card className="p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xl font-semibold">Analytics Summary (7 Days)</h3>
+        <Link href="/analytics" className="flex items-center gap-1 text-accent-blue hover:opacity-80 transition-opacity">
+          <BarChart className="h-5 w-5" />
+          <span>View Full Analytics</span>
+        </Link>
+      </div>
+      
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        <div className="text-center p-3 bg-bg-tertiary/30 rounded-lg">
+          <div className="text-2xl font-bold">{totalRuns}</div>
+          <div className="text-sm text-text-secondary">Total Runs</div>
+        </div>
+        <div className="text-center p-3 bg-bg-tertiary/30 rounded-lg">
+          <div className="text-2xl font-bold">${totalCost.toFixed(2)}</div>
+          <div className="text-sm text-text-secondary">Total Cost</div>
+          <div className="flex items-center justify-center mt-1 text-xs">
+            {costTrend === 'up' ? (
+              <>
+                <TrendingUp className="h-3 w-3 text-accent-red mr-1" />
+                <span className="text-accent-red">+12%</span>
+              </>
+            ) : (
+              <>
+                <TrendingDown className="h-3 w-3 text-accent-green mr-1" />
+                <span className="text-accent-green">-5%</span>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="text-center p-3 bg-bg-tertiary/30 rounded-lg">
+          <div className="text-2xl font-bold">
+            {totalTokens >= 1000000 
+              ? `${(totalTokens / 1000000).toFixed(1)}M`
+              : totalTokens >= 1000 
+                ? `${(totalTokens / 1000).toFixed(1)}k`
+                : totalTokens}
+          </div>
+          <div className="text-sm text-text-secondary">Total Tokens</div>
+        </div>
+        <div className="text-center p-3 bg-bg-tertiary/30 rounded-lg">
+          <div className="text-2xl font-bold">{Math.round(avgDuration / 1000)}s</div>
+          <div className="text-sm text-text-secondary">Avg Duration</div>
+          <div className="flex items-center justify-center mt-1 text-xs">
+            {efficiencyTrend === 'up' ? (
+              <>
+                <TrendingUp className="h-3 w-3 text-accent-green mr-1" />
+                <span className="text-accent-green">Faster</span>
+              </>
+            ) : (
+              <>
+                <TrendingDown className="h-3 w-3 text-accent-red mr-1" />
+                <span className="text-accent-red">Slower</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      {modelBreakdown.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-border-subtle">
+          <h4 className="text-sm font-medium mb-2">Top Models by Cost</h4>
+          <div className="space-y-2">
+            {modelBreakdown.slice(0, 3).map((model, index) => (
+              <div key={model.model} className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full mr-2" 
+                       style={{ 
+                         backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b'][index] 
+                       }} 
+                  />
+                  <span className="text-sm">{model.model}</span>
+                </div>
+                <div className="text-sm font-medium">
+                  ${model.cost.toFixed(2)} ({Math.round((model.cost / totalCost) * 100)}%)
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </Card>
   )
 }

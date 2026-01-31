@@ -217,6 +217,203 @@ export type Database = {
           updated_at?: string
         }
       }
+      alerts: {
+        Row: {
+          id: string
+          type: 'cost' | 'performance' | 'anomaly' | 'usage'
+          severity: 'info' | 'warning' | 'critical'
+          title: string
+          description: string | null
+          metric: string
+          threshold: number | null
+          current_value: number | null
+          triggered_at: string
+          resolved_at: string | null
+          status: 'active' | 'resolved' | 'dismissed'
+          source_id: string | null
+          source_type: string | null
+          created_by: string
+          created_at: string
+          resolved_by: string | null
+          resolution_note: string | null
+          metadata: Record<string, any> | null
+        }
+        Insert: {
+          id?: string
+          type: 'cost' | 'performance' | 'anomaly' | 'usage'
+          severity: 'info' | 'warning' | 'critical'
+          title: string
+          description?: string | null
+          metric: string
+          threshold?: number | null
+          current_value?: number | null
+          triggered_at?: string
+          resolved_at?: string | null
+          status?: 'active' | 'resolved' | 'dismissed'
+          source_id?: string | null
+          source_type?: string | null
+          created_by?: string
+          created_at?: string
+          resolved_by?: string | null
+          resolution_note?: string | null
+          metadata?: Record<string, any> | null
+        }
+        Update: {
+          id?: string
+          type?: 'cost' | 'performance' | 'anomaly' | 'usage'
+          severity?: 'info' | 'warning' | 'critical'
+          title?: string
+          description?: string | null
+          metric?: string
+          threshold?: number | null
+          current_value?: number | null
+          triggered_at?: string
+          resolved_at?: string | null
+          status?: 'active' | 'resolved' | 'dismissed'
+          source_id?: string | null
+          source_type?: string | null
+          created_by?: string
+          created_at?: string
+          resolved_by?: string | null
+          resolution_note?: string | null
+          metadata?: Record<string, any> | null
+        }
+      }
+      alert_rules: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          type: 'cost' | 'performance' | 'anomaly' | 'usage'
+          metric: string
+          operator: '>' | '>=' | '<' | '<=' | '=' | '!=' | 'change' | 'anomaly'
+          threshold: number | null
+          window_hours: number
+          cooldown_minutes: number
+          severity: 'info' | 'warning' | 'critical'
+          is_active: boolean
+          created_by: string
+          created_at: string
+          updated_at: string
+          metadata: Record<string, any> | null
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          type: 'cost' | 'performance' | 'anomaly' | 'usage'
+          metric: string
+          operator: '>' | '>=' | '<' | '<=' | '=' | '!=' | 'change' | 'anomaly'
+          threshold?: number | null
+          window_hours?: number
+          cooldown_minutes?: number
+          severity?: 'info' | 'warning' | 'critical'
+          is_active?: boolean
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+          metadata?: Record<string, any> | null
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          type?: 'cost' | 'performance' | 'anomaly' | 'usage'
+          metric?: string
+          operator?: '>' | '>=' | '<' | '<=' | '=' | '!=' | 'change' | 'anomaly'
+          threshold?: number | null
+          window_hours?: number
+          cooldown_minutes?: number
+          severity?: 'info' | 'warning' | 'critical'
+          is_active?: boolean
+          created_by?: string
+          created_at?: string
+          updated_at?: string
+          metadata?: Record<string, any> | null
+        }
+      }
+      insights: {
+        Row: {
+          id: string
+          type: 'optimization' | 'pattern' | 'trend' | 'anomaly' | 'recommendation'
+          title: string
+          description: string
+          confidence: number
+          impact: 'low' | 'medium' | 'high' | null
+          category: 'cost' | 'performance' | 'usage' | 'model' | 'efficiency'
+          generated_at: string
+          valid_until: string | null
+          is_actionable: boolean
+          action_text: string | null
+          action_url: string | null
+          metadata: Record<string, any> | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          type: 'optimization' | 'pattern' | 'trend' | 'anomaly' | 'recommendation'
+          title: string
+          description: string
+          confidence?: number
+          impact?: 'low' | 'medium' | 'high' | null
+          category: 'cost' | 'performance' | 'usage' | 'model' | 'efficiency'
+          generated_at?: string
+          valid_until?: string | null
+          is_actionable?: boolean
+          action_text?: string | null
+          action_url?: string | null
+          metadata?: Record<string, any> | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          type?: 'optimization' | 'pattern' | 'trend' | 'anomaly' | 'recommendation'
+          title?: string
+          description?: string
+          confidence?: number
+          impact?: 'low' | 'medium' | 'high' | null
+          category?: 'cost' | 'performance' | 'usage' | 'model' | 'efficiency'
+          generated_at?: string
+          valid_until?: string | null
+          is_actionable?: boolean
+          action_text?: string | null
+          action_url?: string | null
+          metadata?: Record<string, any> | null
+          created_at?: string
+        }
+      }
+      user_alert_preferences: {
+        Row: {
+          id: string
+          user_id: string
+          alert_type: string
+          channel: 'dashboard' | 'email' | 'slack' | 'all'
+          enabled: boolean
+          min_severity: 'info' | 'warning' | 'critical'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string
+          alert_type: string
+          channel: 'dashboard' | 'email' | 'slack' | 'all'
+          enabled?: boolean
+          min_severity?: 'info' | 'warning' | 'critical'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          alert_type?: string
+          channel?: 'dashboard' | 'email' | 'slack' | 'all'
+          enabled?: boolean
+          min_severity?: 'info' | 'warning' | 'critical'
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Bell, Search, User, Brain, Code, PenTool, Moon, Rocket, Eye, Bot } from 'lucide-react'
+import { Bell, Search, User, Brain, Code, PenTool, Moon, Rocket, Eye, Bot, BarChart } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { TicketBadge } from '@/components/tickets/TicketBadge'
@@ -86,6 +86,41 @@ export default function Header() {
                 <span className="text-sm capitalize">{sageStatus.status}</span>
               </>
             )}
+          </div>
+
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center space-x-1">
+            <Link
+              href="/"
+              className="px-3 py-1.5 text-sm rounded-md hover:bg-bg-tertiary transition-colors"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/agents"
+              className="px-3 py-1.5 text-sm rounded-md hover:bg-bg-tertiary transition-colors"
+            >
+              Agents
+            </Link>
+            <Link
+              href="/projects"
+              className="px-3 py-1.5 text-sm rounded-md hover:bg-bg-tertiary transition-colors"
+            >
+              Projects
+            </Link>
+            <Link
+              href="/analytics"
+              className="px-3 py-1.5 text-sm rounded-md hover:bg-bg-tertiary transition-colors flex items-center gap-1"
+            >
+              <BarChart className="h-3.5 w-3.5" />
+              Analytics
+            </Link>
+            <Link
+              href="/review"
+              className="px-3 py-1.5 text-sm rounded-md hover:bg-bg-tertiary transition-colors"
+            >
+              Review
+            </Link>
           </div>
         </div>
 
