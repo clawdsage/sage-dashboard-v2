@@ -41,7 +41,7 @@ export default function ReviewPage() {
       <ReviewList
         reviews={reviews}
         isLoading={isLoading}
-        error={error}
+        error={error ?? undefined}
         onApprove={handleApprove}
         onReject={handleReject}
         isApproving={isApproving}

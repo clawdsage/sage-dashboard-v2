@@ -64,7 +64,7 @@ export default function AgentsPage() {
       <AgentList
         agents={filteredAgents}
         isLoading={isLoading}
-        error={error}
+        error={error ?? undefined}
         onRetry={() => window.location.reload()}
       />
     </div>
