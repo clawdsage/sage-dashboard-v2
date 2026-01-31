@@ -1,0 +1,44 @@
+# Sage Dashboard V2 - Complete Rebuild
+
+## Project Info
+**Status:** 🔨 ACTIVE  
+**Started:** 2026-01-31 10:55 EST  
+**Owner:** Sage (Opus) - Coordinator  
+**Sub-agents:** Coder (Grok), Builder (DeepSeek), Researcher (Gemini)  
+**Goal:** Fortune 500-quality dashboard - "Symphony of Productivity"
+
+## Scope (MVP)
+1. **Live Agent Monitor** - Real-time streaming of active agents
+2. **Project Manager** - Tasks, status, notes, organization
+3. **Cost/Analytics** - Spending, tokens, trends, breakdowns
+4. **Review Queue** - Approve/reject agent work
+
+## Key Requirements
+- Real-time everything (WebSocket/Supabase streaming)
+- Beautiful, modern design (Linear/Vercel aesthetic)
+- Zero flashing
+- Mobile responsive
+- Auto-logging integration (agents must appear automatically)
+
+## Timeline
+- Phase 1 (Foundation): ~1 PM EST
+- Phase 2 (Live Agents): ~4-5 PM EST
+- Phase 3 (Projects + Analytics): ~9-10 PM EST
+- Phase 4 (Polish): Overnight
+- Demo Ready: Tomorrow morning
+
+---
+
+## Progress Log
+
+[10:55] PROJECT STARTED - Creating new project from scratch
+[10:55] Step 1: Architecture & design document
+[10:55] Tech stack: Next.js 14, Tailwind, Zustand, Supabase, Recharts
+[10:57] Created ARCHITECTURE.md with full design system, schema, structure
+[10:57] Created GitHub repo: github.com/clawdsage/sage-dashboard-v2
+[10:58] Creating project files manually (npm not in sandbox PATH)
+[10:58] Spawning Coder (Grok) to build foundation...
+[11:00] Checked Supabase schema - existing tables: subagent_runs, projects, tasks, activity_log
+[11:00] Decision: Use existing Supabase, extend schema as needed
+[11:00] Sub-agent working on: package.json, configs, layout, base components
+
