@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 interface LiveIndicatorProps {
-  status: 'active' | 'completed' | 'failed'
+  status: 'active' | 'completed' | 'failed' | 'idle'
   className?: string
 }
 
