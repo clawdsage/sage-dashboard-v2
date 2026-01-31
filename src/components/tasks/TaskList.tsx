@@ -123,7 +123,7 @@ export function TaskList({
       <Card className="p-12 text-center">
         <h3 className="text-lg font-medium mb-2">No tasks yet</h3>
         <p className="text-text-muted mb-4">
-          Create your first task to get started.
+          Add tasks to get started.
         </p>
         <div className="flex gap-2 justify-center">
           <input

@@ -13,90 +13,29 @@ import { cn } from '@/lib/utils'
 import { formatDate } from '@/lib/utils'
 import type { Project, Task } from '@/types/projects'
 
-// Placeholder hooks - in real app, these would be implemented
-// import { useProject } from '@/hooks/useProject'
-// import { useTasks } from '@/hooks/useTasks'
+import { useProject } from '@/hooks/useProjects'
 
 export default function ProjectDetailPage() {
   const params = useParams()
   const router = useRouter()
   const projectId = params.id as string
 
-  // Placeholder data - replace with real hooks
-  const [project, setProject] = useState<Project | null>({
-    id: projectId,
-    name: 'Sample Project',
-    description: 'This is a sample project description',
-    status: 'active',
-    priority: 'high',
-    progress: 65,
-    due_date: '2024-12-31',
-    owner: 'both',
-    tags: ['web', 'dashboard'],
-    color: '#3b82f6',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-01-15T00:00:00Z',
-  })
+  const { project, isLoading, error } = useProject(projectId)
 
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: '1',
-      project_id: projectId,
-      title: 'Design user interface',
-      description: 'Create wireframes and mockups',
-      status: 'done',
-      priority: 'high',
-      assigned_to: 'tim',
-      due_date: '2024-02-01',
-      estimated_hours: 8,
-      actual_hours: 6,
-      order_index: 0,
-      created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-10T00:00:00Z',
-    },
-    {
-      id: '2',
-      project_id: projectId,
-      title: 'Implement authentication',
-      status: 'in_progress',
-      priority: 'urgent',
-      assigned_to: 'sage',
-      due_date: '2024-02-15',
-      estimated_hours: 12,
-      order_index: 1,
-      created_at: '2024-01-05T00:00:00Z',
-      updated_at: '2024-01-12T00:00:00Z',
-    },
-    {
-      id: '3',
-      project_id: projectId,
-      title: 'Write unit tests',
-      status: 'todo',
-      priority: 'medium',
-      due_date: '2024-02-20',
-      estimated_hours: 6,
-      order_index: 2,
-      created_at: '2024-01-08T00:00:00Z',
-      updated_at: '2024-01-08T00:00:00Z',
-    },
-  ])
+  const tasks = project?.tasks || []
 
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   // Placeholder functions - replace with real mutations
   const handleToggleComplete = (taskId: string) => {
-    setTasks(prev => prev.map(task =>
-      task.id === taskId
-        ? { ...task, status: task.status === 'done' ? 'todo' : 'done' as Task['status'] }
-        : task
-    ))
+    // TODO: Implement toggle complete mutation
+    console.log('Toggle complete:', taskId)
   }
 
   const handleUpdateTitle = (taskId: string, title: string) => {
-    setTasks(prev => prev.map(task =>
-      task.id === taskId ? { ...task, title } : task
-    ))
+    // TODO: Implement update title mutation
+    console.log('Update title:', taskId, title)
   }
 
   const handleOpenModal = (taskId: string) => {
@@ -110,44 +49,45 @@ export default function ProjectDetailPage() {
   }
 
   const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
-    setTasks(prev => prev.map(task =>
-      task.id === taskId ? { ...task, ...updates } : task
-    ))
+    // TODO: Implement update task mutation
+    console.log('Update task:', taskId, updates)
   }
 
   const handleDeleteTask = (taskId: string) => {
-    setTasks(prev => prev.filter(task => task.id !== taskId))
+    // TODO: Implement delete task mutation
+    console.log('Delete task:', taskId)
   }
 
   const handleReorderTasks = (taskIds: string[]) => {
-    // Implement reordering logic
+    // TODO: Implement reordering logic
     console.log('Reorder tasks:', taskIds)
   }
 
   const handleCreateTask = (title: string, parentId?: string) => {
-    const newTask: Task = {
-      id: Date.now().toString(),
-      project_id: projectId,
-      title,
-      status: 'todo',
-      priority: 'medium',
-      order_index: tasks.length,
-      parent_task_id: parentId,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-    setTasks(prev => [...prev, newTask])
+    // TODO: Implement create task mutation
+    console.log('Create task:', title, parentId)
   }
 
   const selectedTask = tasks.find(t => t.id === selectedTaskId) || null
 
-  if (!project) {
+  if (isLoading) {
     return (
       <div className="p-6">
         <div className="animate-pulse">
           <div className="h-8 bg-bg-tertiary rounded mb-6"></div>
           <div className="h-32 bg-bg-tertiary rounded"></div>
         </div>
+      </div>
+    )
+  }
+
+  if (error || !project) {
+    return (
+      <div className="p-6">
+        <h1 className="text-3xl font-bold mb-6">Project Not Found</h1>
+        <Card className="p-6">
+          <p className="text-text-red">Error loading project: {error?.message || 'Project not found'}</p>
+        </Card>
       </div>
     )
   }
@@ -191,7 +131,7 @@ export default function ProjectDetailPage() {
               <div className="flex items-center gap-4 text-sm text-text-muted">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Due {formatDate(project.due_date)}
+                  Due {project.due_date ? formatDate(project.due_date) : 'No due date'}
                 </div>
                 <div className="flex items-center gap-1">
                   <User className="h-4 w-4" />

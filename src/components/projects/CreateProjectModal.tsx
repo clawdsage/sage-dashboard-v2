@@ -51,11 +51,11 @@ export function CreateProjectModal({ isOpen, onClose, onCreate, isLoading, initi
 
     onCreate({
       name: name.trim(),
-      description: description.trim() || null,
+      description: description.trim() || undefined,
       color: selectedColor,
       status: initialData?.status || 'active',
       priority,
-      due_date: dueDate || null,
+      due_date: dueDate || undefined,
       tags,
       owner,
     })

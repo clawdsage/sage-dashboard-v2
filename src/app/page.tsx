@@ -3,17 +3,20 @@
 import Link from 'next/link'
 import { useAgents } from '@/hooks/useAgents'
 import { useReviewQueue } from '@/hooks/useReviewQueue'
+import { useProjects } from '@/hooks/useProjects'
 import { AgentList } from '@/components/agents/AgentList'
 import { ActivityFeed } from '@/components/activity/ActivityFeed'
 import { SageStatusBar } from '@/components/dashboard/SageStatusBar'
 import { Card } from '@/components/ui/Card'
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, FolderOpen } from 'lucide-react'
 import { useMemo } from 'react'
 
 export default function DashboardPage() {
   const { agents: allAgents, isLoading } = useAgents()
   const { reviews } = useReviewQueue()
+  const { projects } = useProjects()
   const activeAgents = allAgents.filter(agent => agent.status === 'active')
+  const activeProjects = projects.filter(project => project.status === 'active')
   const activeCount = activeAgents.length
   const pendingReviewCount = reviews.length
 
@@ -87,6 +90,26 @@ export default function DashboardPage() {
       <Card className="p-6">
         <h2 className="text-2xl font-semibold mb-4">Live Agents</h2>
         <AgentList agents={activeAgents} isLoading={isLoading} />
+      </Card>
+
+      {/* Active Projects Summary */}
+      <Card className="p-6">
+        <Link href="/projects" className="block hover:opacity-80 transition-opacity">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <FolderOpen className="h-6 w-6 text-accent-blue" />
+              <div>
+                <h3 className="text-xl font-semibold">Active Projects</h3>
+                <p className="text-text-secondary">
+                  {activeProjects.length} project{activeProjects.length !== 1 ? 's' : ''} in progress
+                </p>
+              </div>
+            </div>
+            <div className="text-accent-blue font-medium">
+              View All →
+            </div>
+          </div>
+        </Link>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

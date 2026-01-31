@@ -5,8 +5,9 @@ A modern, real-time dashboard for monitoring and managing AI agents, projects, a
 ## Features
 
 - **Live Agent Monitoring**: Real-time tracking of agent runs with progress indicators and live updates
-- **Project Management**: Organize tasks and projects with visual progress tracking
-- **Review Queue**: Approve or reject agent outputs before production deployment
+- **Projects V2**: Advanced project management with task tracking, progress visualization, and team collaboration
+- **Task Management**: Create, organize, and track tasks within projects with drag-and-drop reordering
+- **Review Queue**: Approve or reject agent outputs and project tickets before production deployment
 - **Analytics Dashboard**: Comprehensive metrics and charts for performance analysis
 - **Activity Timeline**: Real-time activity feed with event notifications
 - **Responsive Design**: Works seamlessly on desktop and mobile devices

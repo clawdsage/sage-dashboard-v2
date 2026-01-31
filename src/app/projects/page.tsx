@@ -5,17 +5,18 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { ProjectList } from '@/components/projects/ProjectList'
 import { CreateProjectModal } from '@/components/projects/CreateProjectModal'
-import { useProjects } from '@/hooks/useProjects'
+import { useProjects, useCreateProject } from '@/hooks/useProjects'
 import { Plus } from 'lucide-react'
 
 export default function ProjectsPage() {
-  const { projects, isLoading, error, createProject } = useProjects()
+  const { projects, isLoading, error } = useProjects()
+  const createProject = useCreateProject()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleCreateProject = (projectData: any) => {
     // For now, only pass the fields that exist in the database
     const { name, description, color, status } = projectData
-    createProject.mutate({ name, description, color, status })
+    createProject.mutate({ name, description, color, status, priority: 'medium', progress: 0, owner: 'sage' })
   }
 
   if (error) {
@@ -39,7 +40,7 @@ export default function ProjectsPage() {
         </Button>
       </div>
 
-      <ProjectList projects={projects} isLoading={isLoading} />
+      <ProjectList projects={projects as any} isLoading={isLoading} />
 
       <CreateProjectModal
         isOpen={isModalOpen}

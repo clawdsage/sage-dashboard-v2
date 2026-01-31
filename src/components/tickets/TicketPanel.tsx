@@ -73,11 +73,11 @@ export function TicketPanel({ tickets, isLoading, onApprove, onReject, onComment
       {filteredTickets.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-text-muted mb-2">
-            {filter === 'all' ? 'No tickets found' : `No ${filter} tickets`}
+            {filter === 'all' ? 'No pending reviews' : `No ${filter} tickets`}
           </div>
           <p className="text-sm text-text-muted">
             {filter === 'all'
-              ? 'Tickets will appear here when they need review.'
+              ? 'No pending reviews'
               : `No ${filter} tickets match your filter.`
             }
           </p>

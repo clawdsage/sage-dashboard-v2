@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
-import { CommentSection } from '@/components/comments/CommentSection'
+// import { CommentSection } from '@/components/comments/CommentSection'
 import { X, Trash2, Plus, Clock, Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Task } from '@/types/projects'
@@ -235,12 +235,12 @@ export function TaskDetailModal({
                 </div>
               </div>
 
-              {/* Comments Section */}
-              <CommentSection
+              {/* Comments Section - TODO: Implement */}
+              {/* <CommentSection
                 entityType="task"
                 entityId={task.id}
                 currentUser={currentUser}
-              />
+              /> */}
             </div>
 
             {/* Footer */}
