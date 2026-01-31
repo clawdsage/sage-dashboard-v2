@@ -80,13 +80,34 @@ export function useReviewQueue() {
     },
   })
 
+  const bulkApproveMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase
+        .from('subagent_runs')
+        .update({
+          review_status: 'approved',
+          review_comment: 'Bulk approved',
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: 'user',
+        })
+        .in('id', ids)
+
+      if (error) throw error
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reviewQueue'] })
+    },
+  })
+
   return {
     reviews: query.data || [],
     isLoading: query.isLoading,
     error: query.error,
     approveReview: approveMutation.mutate,
     rejectReview: rejectMutation.mutate,
+    bulkApprove: bulkApproveMutation.mutate,
     isApproving: approveMutation.isPending,
     isRejecting: rejectMutation.isPending,
+    isBulkApproving: bulkApproveMutation.isPending,
   }
 }

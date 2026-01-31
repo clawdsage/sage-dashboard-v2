@@ -15,7 +15,15 @@ export function formatDuration(ms: number): string {
 }
 
 export function formatCost(dollars: number): string {
-  if (dollars === null || dollars === undefined) return '$0.00'
+  if (dollars === null || dollars === undefined || dollars === 0) return '$0.00'
+  
+  // Show more precision for small amounts (< $0.01)
+  if (dollars < 0.01) {
+    // Show up to 4 decimal places, remove trailing zeros
+    const formatted = Number(dollars).toFixed(4).replace(/\.?0+$/, '')
+    return `$${formatted}`
+  }
+  
   return `$${Number(dollars).toFixed(2)}`
 }
 

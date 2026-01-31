@@ -37,28 +37,24 @@ export function AgentCard({ agent }: AgentCardProps) {
       )}
       onClick={() => setIsExpanded(!isExpanded)}
     >
-      <div className="p-4">
+      <div className="p-3">
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2 min-w-0">
             <LiveIndicator status={agent.status} />
-            <h3 className="font-semibold text-text-primary">{agent.name}</h3>
+            <h3 className="font-medium text-text-primary text-sm truncate">{agent.name}</h3>
           </div>
-          <Badge variant={statusVariants[agent.status]} className="capitalize">
+          <Badge variant={statusVariants[agent.status]} className="capitalize text-xs ml-2 shrink-0">
             {agent.status}
           </Badge>
         </div>
 
-        {/* Progress Bar */}
+        {/* Progress Bar - only for active */}
         {agent.status === 'active' && (
-          <div className="mb-3">
-            <div className="flex justify-between text-sm text-text-secondary mb-1">
-              <span>Progress</span>
-              <span>{agent.progress}%</span>
-            </div>
-            <div className="w-full bg-bg-tertiary rounded-full h-2">
+          <div className="mb-2">
+            <div className="w-full bg-bg-tertiary rounded-full h-1.5">
               <motion.div
-                className="bg-accent-blue h-2 rounded-full"
+                className="bg-accent-blue h-1.5 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${agent.progress}%` }}
                 transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -67,34 +63,19 @@ export function AgentCard({ agent }: AgentCardProps) {
           </div>
         )}
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          <div>
-            <div className="text-text-muted">Time</div>
-            <div className="text-text-primary font-medium">
-              {formatDuration(elapsedMs)}
-            </div>
-          </div>
-          <div>
-            <div className="text-text-muted">Tokens</div>
-            <div className="text-text-primary font-medium">
-              {formatTokens(agent.tokens_used)}
-            </div>
-          </div>
-          <div>
-            <div className="text-text-muted">Cost</div>
-            <div className="text-text-primary font-medium">
-              {formatCost(agent.cost)}
-            </div>
-          </div>
+        {/* Stats Row - compact inline */}
+        <div className="flex items-center gap-3 text-xs text-text-muted mb-2">
+          <span><span className="text-text-secondary">{formatDuration(elapsedMs)}</span></span>
+          <span>•</span>
+          <span><span className="text-text-secondary">{formatTokens(agent.tokens_used)}</span> tokens</span>
+          <span>•</span>
+          <span><span className="text-text-secondary">{formatCost(agent.cost)}</span></span>
         </div>
 
         {/* Description */}
-        <div className="mt-3">
-          <p className="text-text-secondary text-sm line-clamp-2">
-            {agent.task_description || 'No description'}
-          </p>
-        </div>
+        <p className="text-text-muted text-xs line-clamp-2">
+          {agent.task_description || 'No description'}
+        </p>
       </div>
 
       {/* Expanded Details */}
