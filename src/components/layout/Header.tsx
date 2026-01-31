@@ -1,11 +1,89 @@
-import { Bell, Search, User } from 'lucide-react'
+'use client'
+
+import { Bell, Search, User, Brain, Code, PenTool, Moon, Rocket, Eye, Bot } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
+
+const statusIcons: Record<string, React.ReactNode> = {
+  thinking: <Brain className="w-4 h-4" />,
+  coding: <Code className="w-4 h-4" />,
+  writing: <PenTool className="w-4 h-4" />,
+  idle: <Moon className="w-4 h-4" />,
+  spawning: <Rocket className="w-4 h-4" />,
+  reviewing: <Eye className="w-4 h-4" />,
+}
+
+const statusColors: Record<string, string> = {
+  thinking: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+  coding: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+  writing: 'bg-green-500/20 text-green-400 border-green-500/30',
+  idle: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+  spawning: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+  reviewing: 'bg-pink-500/20 text-pink-400 border-pink-500/30',
+}
+
+function parseStatusMessage(message: string) {
+  const statusMatch = message.match(/^\S+\s*(\w+):/)
+  const status = statusMatch ? statusMatch[1].toLowerCase() : 'idle'
+  const descMatch = message.match(/:\s*([^|]+)/)
+  const description = descMatch ? descMatch[1].trim() : 'Standing by'
+  return { status, description }
+}
 
 export default function Header() {
+  const [sageStatus, setSageStatus] = useState<{ status: string; description: string } | null>(null)
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const { data } = await supabase
+        .from('subagent_runs')
+        .select('task_description')
+        .eq('name', 'sage-main-status')
+        .single()
+      
+      if (data?.task_description) {
+        setSageStatus(parseStatusMessage(data.task_description))
+      }
+    }
+    fetchStatus()
+
+    const channel = supabase
+      .channel('sage-header-status')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'subagent_runs',
+        filter: 'name=eq.sage-main-status'
+      }, (payload) => {
+        if ((payload.new as any)?.task_description) {
+          setSageStatus(parseStatusMessage((payload.new as any).task_description))
+        }
+      })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [])
+
   return (
     <header className="bg-bg-secondary border-b border-border-subtle px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          {/* Page title will be handled by individual pages */}
+          {/* Main Agent Status - Always visible */}
+          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${sageStatus ? statusColors[sageStatus.status] || statusColors.idle : 'bg-bg-tertiary border-border-subtle'}`}>
+            <div className="relative">
+              <div className="w-2 h-2 bg-green-400 rounded-full" />
+              <div className="absolute inset-0 w-2 h-2 bg-green-400 rounded-full animate-ping opacity-50" />
+            </div>
+            <Bot className="w-4 h-4" />
+            <span className="font-medium text-sm">Sage</span>
+            {sageStatus && (
+              <>
+                <span className="text-text-muted">•</span>
+                {statusIcons[sageStatus.status] || <Moon className="w-4 h-4" />}
+                <span className="text-sm capitalize">{sageStatus.status}</span>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center space-x-4">

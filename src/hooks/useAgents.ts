@@ -12,6 +12,7 @@ export function useAgents(status?: 'active' | 'completed' | 'failed') {
       let query = supabase
         .from('subagent_runs')
         .select('*')
+        .neq('name', 'sage-main-status')  // Exclude main agent - shown in header
         .order('started_at', { ascending: false })
 
       if (status) {
