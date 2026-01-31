@@ -1,8 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { Bell, Search, User, Brain, Code, PenTool, Moon, Rocket, Eye, Bot } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { TicketBadge } from '@/components/tickets/TicketBadge'
 
 const statusIcons: Record<string, React.ReactNode> = {
   thinking: <Brain className="w-4 h-4" />,
@@ -32,6 +34,7 @@ function parseStatusMessage(message: string) {
 
 export default function Header() {
   const [sageStatus, setSageStatus] = useState<{ status: string; description: string } | null>(null)
+  const [pendingTickets] = useState(3) // Mock pending count - replace with actual hook
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -96,6 +99,11 @@ export default function Header() {
               className="pl-10 pr-4 py-2 bg-bg-tertiary border border-border-subtle rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent"
             />
           </div>
+
+          {/* Tickets */}
+          <Link href="/review">
+            <TicketBadge count={pendingTickets} />
+          </Link>
 
           {/* Notifications */}
           <button className="p-2 rounded-md hover:bg-bg-tertiary transition-colors relative">
