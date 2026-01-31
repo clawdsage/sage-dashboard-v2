@@ -17,6 +17,7 @@ export function AgentCard({ agent }: AgentCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const statusVariants = {
+    idle: 'secondary',
     active: 'default',
     completed: 'success',
     failed: 'danger',
