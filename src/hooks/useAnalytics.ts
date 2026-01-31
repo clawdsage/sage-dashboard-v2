@@ -48,7 +48,7 @@ export function useAnalytics(range: 'today' | '7d' | '30d' | 'custom', startDate
 
       if (error) throw error
 
-      const runsData = runs as AgentRun[]
+      const runsData = runs as any[]
 
       // Calculate aggregates
       const totalRuns = runsData.length
