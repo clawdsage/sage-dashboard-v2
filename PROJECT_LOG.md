@@ -61,4 +61,8 @@
        - Run in Supabase Dashboard > SQL Editor
        - Not blocking for MVP (nice to have)
 [11:07] Phase 2 sub-agent running: Live Agents feature
+[11:10] Phase 2 files created: AgentCard, AgentList, LiveIndicator, useAgents hook, formatters
+[11:11] Fixed: Table name (agent_runs → subagent_runs)
+[11:11] Fixed: Type definitions to match actual Supabase schema
+[11:11] Fixed: AgentCard using tokens_used instead of tokens_total
 

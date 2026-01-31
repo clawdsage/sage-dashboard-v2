@@ -10,7 +10,7 @@ export function useAgents(status?: 'active' | 'completed' | 'failed') {
     queryKey: ['agents', status],
     queryFn: async () => {
       let query = supabase
-        .from('agent_runs')
+        .from('subagent_runs')
         .select('*')
         .order('started_at', { ascending: false })
 
@@ -27,13 +27,13 @@ export function useAgents(status?: 'active' | 'completed' | 'failed') {
 
   useEffect(() => {
     const channel = supabase
-      .channel('agent_runs_changes')
+      .channel('subagent_runs_changes')
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'agent_runs',
+          table: 'subagent_runs',
         },
         (payload) => {
           queryClient.invalidateQueries({ queryKey: ['agents'] })

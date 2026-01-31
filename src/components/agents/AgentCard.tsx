@@ -6,7 +6,8 @@ import { AgentRun } from '@/types'
 import { Badge } from '@/components/ui/Badge'
 import { Card } from '@/components/ui/Card'
 import { LiveIndicator } from './LiveIndicator'
-import { formatDuration, formatCost, formatTokens } from '@/lib/formatters'
+import { formatDuration, formatCost, formatTokens, formatRelativeTime } from '@/lib/formatters'
+import { cn } from '@/lib/utils'
 
 interface AgentCardProps {
   agent: AgentRun
@@ -74,7 +75,7 @@ export function AgentCard({ agent }: AgentCardProps) {
           <div>
             <div className="text-text-muted">Tokens</div>
             <div className="text-text-primary font-medium">
-              {formatTokens(agent.tokens_total)}
+              {formatTokens(agent.tokens_used)}
             </div>
           </div>
           <div>
@@ -118,12 +119,12 @@ export function AgentCard({ agent }: AgentCardProps) {
                     </div>
                   )}
                   <div className="flex justify-between">
-                    <dt className="text-text-muted">Input Tokens</dt>
-                    <dd className="text-text-primary">{agent.tokens_input.toLocaleString()}</dd>
+                    <dt className="text-text-muted">Tokens Used</dt>
+                    <dd className="text-text-primary">{agent.tokens_used.toLocaleString()}</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-text-muted">Output Tokens</dt>
-                    <dd className="text-text-primary">{agent.tokens_output.toLocaleString()}</dd>
+                    <dt className="text-text-muted">API Calls</dt>
+                    <dd className="text-text-primary">{agent.api_calls}</dd>
                   </div>
                   {agent.model && (
                     <div className="flex justify-between">

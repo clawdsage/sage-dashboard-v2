@@ -21,31 +21,26 @@ export interface Task {
   updated_at: string
 }
 
-// Agent types
+// Agent types (matches subagent_runs table)
 export interface AgentRun {
   id: string
-  session_key?: string
-  label?: string
   name: string
-  model?: string
-  status: 'active' | 'completed' | 'failed'
+  status: 'idle' | 'active' | 'completed' | 'failed'
   progress: number
-  project_id?: string
-  task_id?: string
-  task_description?: string
+  project_id?: string | null
+  task_id?: string | null
+  task_description?: string | null
   started_at: string
-  completed_at?: string
-  tokens_input: number
-  tokens_output: number
-  tokens_total: number
+  completed_at?: string | null
+  estimated_completion?: string | null
+  tokens_used: number
+  api_calls: number
   cost: number
-  duration_ms?: number
-  review_status: 'none' | 'pending' | 'approved' | 'rejected'
-  output_summary?: string
-  review_notes?: string
-  reviewed_at?: string
-  created_at: string
-  updated_at: string
+  review_status: 'pending' | 'approved' | 'rejected'
+  output?: string | null
+  review_comment?: string | null
+  reviewed_at?: string | null
+  reviewed_by?: string | null
 }
 
 // Activity types

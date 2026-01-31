@@ -14,9 +14,9 @@ export function formatDuration(ms: number): string {
   }
 }
 
-export function formatCost(cents: number): string {
-  if (cents === null || cents === undefined) return '$0.00'
-  return `$${(cents / 100).toFixed(2)}`
+export function formatCost(dollars: number): string {
+  if (dollars === null || dollars === undefined) return '$0.00'
+  return `$${Number(dollars).toFixed(2)}`
 }
 
 export function formatTokens(num: number): string {
