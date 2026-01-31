@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
+import { CommentSection } from '@/components/comments/CommentSection'
 import { X, Trash2, Plus, Clock, Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Task } from '@/types/projects'
@@ -15,6 +16,7 @@ interface TaskDetailModalProps {
   onUpdate: (taskId: string, updates: Partial<Task>) => void
   onDelete: (taskId: string) => void
   onCreateSubtask: (parentId: string, title: string) => void
+  currentUser?: 'tim' | 'sage'
 }
 
 const statusOptions = [
@@ -41,6 +43,7 @@ export function TaskDetailModal({
   onUpdate,
   onDelete,
   onCreateSubtask,
+  currentUser = 'sage',
 }: TaskDetailModalProps) {
   const [editedTask, setEditedTask] = useState<Partial<Task>>({})
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('')
@@ -232,13 +235,12 @@ export function TaskDetailModal({
                 </div>
               </div>
 
-              {/* Comments Section Placeholder */}
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-2">Comments</label>
-                <div className="p-4 bg-bg-primary border border-border-default rounded-md">
-                  <p className="text-text-muted">Comments section (use CommentThread component placeholder)</p>
-                </div>
-              </div>
+              {/* Comments Section */}
+              <CommentSection
+                entityType="task"
+                entityId={task.id}
+                currentUser={currentUser}
+              />
             </div>
 
             {/* Footer */}
