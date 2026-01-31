@@ -129,12 +129,6 @@ export function AgentCard({ agent }: AgentCardProps) {
                     <dt className="text-text-muted">API Calls</dt>
                     <dd className="text-text-primary">{agent.api_calls}</dd>
                   </div>
-                  {agent.model && (
-                    <div className="flex justify-between">
-                      <dt className="text-text-muted">Model</dt>
-                      <dd className="text-text-primary">{agent.model}</dd>
-                    </div>
-                  )}
                 </dl>
               </div>
             </div>
