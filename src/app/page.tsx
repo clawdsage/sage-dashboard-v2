@@ -1,13 +1,18 @@
 'use client'
 
+import Link from 'next/link'
 import { useAgents } from '@/hooks/useAgents'
+import { useReviewQueue } from '@/hooks/useReviewQueue'
 import { AgentList } from '@/components/agents/AgentList'
 import { Card } from '@/components/ui/Card'
+import { AlertTriangle } from 'lucide-react'
 
 export default function DashboardPage() {
   const { agents: allAgents, isLoading } = useAgents()
+  const { reviews } = useReviewQueue()
   const activeAgents = allAgents.filter(agent => agent.status === 'active')
   const activeCount = activeAgents.length
+  const pendingReviewCount = reviews.length
 
   return (
     <div className="p-6 space-y-6">
@@ -22,6 +27,28 @@ export default function DashboardPage() {
           Quick Add
         </button>
       </div>
+
+      {/* Needs Attention Section */}
+      {pendingReviewCount > 0 && (
+        <Card className="p-4 border-amber-200 bg-amber-50/50">
+          <Link href="/review" className="flex items-center justify-between hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-600" />
+              <div>
+                <div className="font-medium text-text-primary">
+                  {pendingReviewCount} agent{pendingReviewCount !== 1 ? 's' : ''} pending review
+                </div>
+                <div className="text-sm text-text-secondary">
+                  Review outputs before they go live
+                </div>
+              </div>
+            </div>
+            <div className="text-accent-blue font-medium">
+              View All →
+            </div>
+          </Link>
+        </Card>
+      )}
 
       <Card className="p-6">
         <h2 className="text-2xl font-semibold mb-4">Live Agents</h2>
@@ -60,11 +87,6 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
-
-      <Card className="p-6">
-        <h3 className="text-xl font-semibold mb-4">NEEDS ATTENTION (Review Queue Preview)</h3>
-        <p className="text-text-secondary">[2 agents pending review] [View All →]</p>
-      </Card>
     </div>
   )
 }

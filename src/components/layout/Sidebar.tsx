@@ -10,6 +10,7 @@ import {
   DollarSign
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/Badge'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: Home },
@@ -19,7 +20,11 @@ const navigation = [
   { name: 'Review', href: '/review', icon: CheckCircle },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+  pendingReviewCount?: number
+}
+
+export default function Sidebar({ pendingReviewCount = 0 }: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -34,12 +39,13 @@ export default function Sidebar() {
       <nav className="flex-1 p-4 space-y-2">
         {navigation.map((item) => {
           const isActive = pathname === item.href
+          const showBadge = item.name === 'Review' && pendingReviewCount > 0
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                'flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                'flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors relative',
                 isActive
                   ? 'bg-accent-blue text-white'
                   : 'text-text-secondary hover:bg-bg-tertiary hover:text-text-primary'
@@ -47,6 +53,14 @@ export default function Sidebar() {
             >
               <item.icon className="mr-3 h-5 w-5" />
               {item.name}
+              {showBadge && (
+                <Badge
+                  variant="danger"
+                  className="ml-auto text-xs px-1.5 py-0.5 h-5 min-w-5 flex items-center justify-center"
+                >
+                  {pendingReviewCount}
+                </Badge>
+              )}
             </Link>
           )
         })}
