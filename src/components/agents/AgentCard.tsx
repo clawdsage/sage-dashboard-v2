@@ -24,7 +24,9 @@ export function AgentCard({ agent }: AgentCardProps) {
 
   const now = new Date()
   const startedAt = new Date(agent.started_at)
-  const elapsedMs = agent.status === 'active' ? now.getTime() - startedAt.getTime() : agent.duration_ms || 0
+  const elapsedMs = agent.status === 'active' 
+    ? now.getTime() - startedAt.getTime() 
+    : (agent.completed_at ? new Date(agent.completed_at).getTime() - startedAt.getTime() : 0)
 
   return (
     <Card
