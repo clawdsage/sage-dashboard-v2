@@ -15,10 +15,19 @@ export function LiveIndicator({ status, className }: LiveIndicatorProps) {
     )
   }
 
+  const statusColors = {
+    completed: 'bg-accent-green',
+    failed: 'bg-accent-red',
+    idle: 'bg-text-muted',
+  } as const
+
   return (
-    <div className={cn('w-2 h-2 rounded-full', className)}>
-      {status === 'completed' && 'bg-accent-green'}
-      {status === 'failed' && 'bg-accent-red'}
-    </div>
+    <div
+      className={cn(
+        'w-2 h-2 rounded-full',
+        statusColors[status as keyof typeof statusColors] || 'bg-text-muted',
+        className
+      )}
+    />
   )
 }
