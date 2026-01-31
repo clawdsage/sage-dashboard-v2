@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { Database } from '@/lib/supabase'
 
-type AgentRun = Database['public']['Tables']['agent_runs']['Row']
+type AgentRun = Database['public']['Tables']['subagent_runs']['Row']
 
 interface AnalyticsData {
   totalRuns: number
@@ -40,7 +40,7 @@ export function useAnalytics(range: 'today' | '7d' | '30d' | 'custom', startDate
     queryKey: ['analytics', range, start.toISOString(), end.toISOString()],
     queryFn: async () => {
       const { data: runs, error } = await supabase
-        .from('agent_runs')
+        .from('subagent_runs')
         .select('*')
         .gte('started_at', start.toISOString())
         .lte('started_at', end.toISOString())
@@ -53,8 +53,14 @@ export function useAnalytics(range: 'today' | '7d' | '30d' | 'custom', startDate
       // Calculate aggregates
       const totalRuns = runsData.length
       const totalCost = runsData.reduce((sum, run) => sum + (run.cost || 0), 0)
-      const totalTokens = runsData.reduce((sum, run) => sum + (run.tokens_total || 0), 0)
-      const totalDuration = runsData.reduce((sum, run) => sum + (run.duration_ms || 0), 0)
+      const totalTokens = runsData.reduce((sum, run) => sum + (run.tokens_used || 0), 0)
+      // Duration calculated from completed_at - started_at if available
+      const totalDuration = runsData.reduce((sum, run) => {
+        if (run.completed_at && run.started_at) {
+          return sum + (new Date(run.completed_at).getTime() - new Date(run.started_at).getTime())
+        }
+        return sum
+      }, 0)
       const avgDuration = totalRuns > 0 ? totalDuration / totalRuns : 0
 
       // Status breakdown
