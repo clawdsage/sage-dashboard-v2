@@ -36,9 +36,9 @@ export function ModelBreakdown({ data }: ModelBreakdownProps) {
           />
           <Legend
             wrapperStyle={{ color: '#a1a1aa' }}
-            formatter={(value, entry) => (
+            formatter={(value) => (
               <span style={{ color: '#fafafa' }}>
-                {entry.payload ? `${entry.payload.model}: $${entry.payload.cost.toFixed(4)}` : value}
+                {value}
               </span>
             )}
           />
