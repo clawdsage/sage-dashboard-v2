@@ -73,7 +73,7 @@ export type Database = {
           updated_at?: string
         }
       }
-      agent_runs: {
+      subagent_runs: {
         Row: {
           id: string
           session_key: string | null

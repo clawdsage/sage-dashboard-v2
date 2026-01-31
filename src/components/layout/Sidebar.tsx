@@ -23,9 +23,15 @@ const navigation = [
 
 interface SidebarProps {
   pendingReviewCount?: number
+  activeAgentCount?: number
+  todayCost?: number
 }
 
-export default function Sidebar({ pendingReviewCount = 0 }: SidebarProps) {
+export default function Sidebar({
+  pendingReviewCount = 0,
+  activeAgentCount = 0,
+  todayCost = 0
+}: SidebarProps) {
   const pathname = usePathname()
 
   return (
@@ -76,14 +82,14 @@ export default function Sidebar({ pendingReviewCount = 0 }: SidebarProps) {
               <Activity className="mr-2 h-4 w-4 text-accent-green" />
               Active
             </span>
-            <span className="font-medium">3</span>
+            <span className="font-medium">{activeAgentCount}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center">
               <DollarSign className="mr-2 h-4 w-4 text-accent-amber" />
               Today
             </span>
-            <span className="font-medium">$4.52</span>
+            <span className="font-medium">${todayCost.toFixed(2)}</span>
           </div>
         </div>
       </div>
