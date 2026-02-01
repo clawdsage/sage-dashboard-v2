@@ -49,37 +49,37 @@ export default function AgentColumn({ agents, onAgentStatusChange }: AgentColumn
   }
 
   return (
-    <div className="p-4">
-      <h2 className="text-lg font-semibold text-text-primary mb-4">Agent Squad</h2>
-      <div className="space-y-3">
+    <div className="p-3">
+      <h2 className="text-sm font-semibold text-text-primary mb-3">Agent Squad</h2>
+      <div className="space-y-2">
         {agents.map((agent) => {
           const status = statusConfig[agent.status]
           const StatusIcon = status.icon
           
           return (
-            <Card key={agent.id} className="p-4 hover:bg-bg-tertiary transition-colors">
+            <Card key={agent.id} className="p-2.5 hover:bg-bg-tertiary transition-colors">
               <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3">
-                  <div className="text-2xl">{agent.avatar}</div>
+                <div className="flex items-start space-x-2">
+                  <div className="text-xl">{agent.avatar}</div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium text-text-primary">{agent.name}</h3>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-sm font-medium text-text-primary">{agent.name}</h3>
                       <Badge 
                         variant={agent.status === 'active' ? 'warning' : 
                                 agent.status === 'thinking' ? 'default' : 
                                 agent.status === 'blocked' ? 'danger' : 'secondary'}
-                        className="text-xs"
+                        className="text-[10px] px-1.5 py-0"
                       >
                         {status.label}
                       </Badge>
                     </div>
-                    <p className="text-sm text-text-secondary mt-1">{agent.role}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs px-2 py-1 bg-bg-tertiary rounded text-text-muted">
+                    <p className="text-xs text-text-secondary mt-0.5">{agent.role}</p>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="text-[10px] px-1.5 py-0.5 bg-bg-tertiary rounded text-text-muted">
                         {agent.model || 'No model'}
                       </span>
                       {agent.current_task_id && (
-                        <span className="text-xs px-2 py-1 bg-accent-blue/10 text-accent-blue rounded">
+                        <span className="text-[10px] px-1.5 py-0.5 bg-accent-blue/10 text-accent-blue rounded">
                           On Task
                         </span>
                       )}
@@ -92,7 +92,7 @@ export default function AgentColumn({ agents, onAgentStatusChange }: AgentColumn
                   size="sm"
                   onClick={() => handleActivateAgent(agent)}
                   className={cn(
-                    "transition-all",
+                    "transition-all text-xs px-2 py-1 h-7",
                     agent.status === 'active' && "bg-accent-amber hover:bg-accent-amber/90"
                   )}
                 >
@@ -104,25 +104,25 @@ export default function AgentColumn({ agents, onAgentStatusChange }: AgentColumn
                   ) : (
                     <>
                       <Pause className="h-3 w-3 mr-1" />
-                      Deactivate
+                      Stop
                     </>
                   )}
                 </Button>
               </div>
 
               {/* Status indicator */}
-              <div className="flex items-center mt-3 pt-3 border-t border-border-subtle">
+              <div className="flex items-center mt-1.5 pt-1.5 border-t border-border-subtle">
                 <div className="flex items-center">
-                  <StatusIcon className={cn("h-4 w-4 mr-2", status.textColor)} />
-                  <span className={cn("text-sm font-medium", status.textColor)}>
+                  <StatusIcon className={cn("h-3 w-3 mr-1.5", status.textColor)} />
+                  <span className={cn("text-xs font-medium", status.textColor)}>
                     {status.label}
                   </span>
                 </div>
                 {agent.status === 'active' && (
                   <div className="ml-auto">
                     <div className="flex items-center">
-                      <div className="h-2 w-2 rounded-full bg-accent-amber animate-pulse mr-2"></div>
-                      <span className="text-xs text-text-muted">Live</span>
+                      <div className="h-1.5 w-1.5 rounded-full bg-accent-amber animate-pulse mr-1.5"></div>
+                      <span className="text-[10px] text-text-muted">Live</span>
                     </div>
                   </div>
                 )}
@@ -133,20 +133,20 @@ export default function AgentColumn({ agents, onAgentStatusChange }: AgentColumn
       </div>
 
       {/* Stats summary */}
-      <div className="mt-6 p-4 bg-bg-tertiary rounded-lg">
-        <h3 className="text-sm font-medium text-text-primary mb-2">Squad Status</h3>
+      <div className="mt-3 p-3 bg-bg-tertiary rounded-lg">
+        <h3 className="text-xs font-medium text-text-primary mb-1.5">Squad Status</h3>
         <div className="grid grid-cols-2 gap-2">
           <div className="text-center">
-            <div className="text-2xl font-bold text-text-primary">
+            <div className="text-xl font-bold text-text-primary">
               {agents.filter(a => a.status === 'active').length}
             </div>
-            <div className="text-xs text-text-secondary">Active</div>
+            <div className="text-[10px] text-text-secondary">Active</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-text-primary">
+            <div className="text-xl font-bold text-text-primary">
               {agents.filter(a => a.status === 'idle').length}
             </div>
-            <div className="text-xs text-text-secondary">Idle</div>
+            <div className="text-[10px] text-text-secondary">Idle</div>
           </div>
         </div>
       </div>

@@ -59,19 +59,19 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
   }
 
   return (
-    <div className="h-full p-4">
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-text-primary">Activity Feed</h2>
-        <p className="text-sm text-text-secondary">Real-time updates from your squad</p>
+    <div className="h-full p-3">
+      <div className="mb-3">
+        <h2 className="text-sm font-semibold text-text-primary">Activity Feed</h2>
+        <p className="text-xs text-text-secondary">Real-time squad updates</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {activities.length === 0 ? (
-          <Card className="p-6 text-center">
-            <div className="text-3xl mb-3">📊</div>
-            <h3 className="font-medium text-text-primary mb-1">No activity yet</h3>
-            <p className="text-sm text-text-secondary">
-              Create tasks and activate agents to see activity here
+          <Card className="p-4 text-center">
+            <div className="text-2xl mb-2">📊</div>
+            <h3 className="text-sm font-medium text-text-primary mb-1">No activity yet</h3>
+            <p className="text-xs text-text-secondary">
+              Create tasks and activate agents
             </p>
           </Card>
         ) : (
@@ -79,8 +79,8 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
             const timeAgo = formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })
             
             return (
-              <Card key={activity.id} className="p-3 hover:bg-bg-tertiary transition-colors">
-                <div className="flex items-start gap-3">
+              <Card key={activity.id} className="p-2 hover:bg-bg-tertiary transition-colors">
+                <div className="flex items-start gap-2">
                   {/* Icon */}
                   <div className="mt-0.5">
                     {getActivityIcon(activity.type)}
@@ -88,20 +88,20 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-text-primary">
+                    <p className="text-xs text-text-primary leading-relaxed">
                       {formatActivityMessage(activity)}
                     </p>
                     
                     {/* Metadata */}
                     {activity.metadata && (
-                      <div className="mt-1">
+                      <div className="mt-1 flex gap-1">
                         {activity.metadata.task_id && (
-                          <span className="text-xs text-accent-blue bg-accent-blue/10 px-2 py-0.5 rounded mr-2">
+                          <span className="text-[10px] text-accent-blue bg-accent-blue/10 px-1.5 py-0.5 rounded">
                             Task
                           </span>
                         )}
                         {activity.metadata.agent_id && (
-                          <span className="text-xs text-accent-amber bg-accent-amber/10 px-2 py-0.5 rounded">
+                          <span className="text-[10px] text-accent-amber bg-accent-amber/10 px-1.5 py-0.5 rounded">
                             Agent
                           </span>
                         )}
@@ -109,7 +109,7 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
                     )}
 
                     {/* Time */}
-                    <p className="text-xs text-text-muted mt-2">
+                    <p className="text-[10px] text-text-muted mt-1">
                       {timeAgo}
                     </p>
                   </div>
@@ -122,26 +122,26 @@ export default function ActivityFeed({ activities }: ActivityFeedProps) {
 
       {/* Stats */}
       {activities.length > 0 && (
-        <div className="mt-6 p-4 bg-bg-tertiary rounded-lg">
-          <h3 className="text-sm font-medium text-text-primary mb-2">Today's Activity</h3>
-          <div className="grid grid-cols-3 gap-2">
+        <div className="mt-3 p-3 bg-bg-tertiary rounded-lg">
+          <h3 className="text-xs font-medium text-text-primary mb-1.5">Today's Activity</h3>
+          <div className="grid grid-cols-3 gap-1.5">
             <div className="text-center">
-              <div className="text-xl font-bold text-text-primary">
+              <div className="text-lg font-bold text-text-primary">
                 {activities.filter(a => a.type.includes('task')).length}
               </div>
-              <div className="text-xs text-text-secondary">Tasks</div>
+              <div className="text-[10px] text-text-secondary">Tasks</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold text-text-primary">
+              <div className="text-lg font-bold text-text-primary">
                 {activities.filter(a => a.type.includes('agent')).length}
               </div>
-              <div className="text-xs text-text-secondary">Agents</div>
+              <div className="text-[10px] text-text-secondary">Agents</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold text-text-primary">
+              <div className="text-lg font-bold text-text-primary">
                 {activities.filter(a => a.type.includes('comment')).length}
               </div>
-              <div className="text-xs text-text-secondary">Comments</div>
+              <div className="text-[10px] text-text-secondary">Comments</div>
             </div>
           </div>
         </div>

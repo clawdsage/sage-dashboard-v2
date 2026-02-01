@@ -79,28 +79,28 @@ export default function MissionControlPage() {
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="p-6 border-b border-border-subtle">
+      {/* Compact Header */}
+      <div className="px-4 py-3 border-b border-border-subtle">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-text-primary">Mission Control</h1>
-            <p className="text-text-secondary mt-1">Coordinate your AI agent squad in real-time</p>
+            <h1 className="text-xl font-bold text-text-primary">Mission Control</h1>
+            <p className="text-xs text-text-secondary">AI agent squad coordination</p>
           </div>
           <Button
             variant="default"
             onClick={() => setIsCreateTaskModalOpen(true)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-1.5 text-sm px-3 py-1.5 h-8"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-3.5 w-3.5" />
             New Task
           </Button>
         </div>
       </div>
 
-      {/* Main Content - Three Column Layout */}
+      {/* Main Content - Compact Three Column Layout */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Column: Agent Cards */}
-        <div className="w-80 border-r border-border-subtle overflow-y-auto">
+        {/* Left Column: Agent Cards (narrower) */}
+        <div className="w-64 border-r border-border-subtle overflow-y-auto">
           <AgentColumn 
             agents={agents}
             onAgentStatusChange={updateAgentStatus}
@@ -118,8 +118,8 @@ export default function MissionControlPage() {
           />
         </div>
 
-        {/* Right Column: Activity Feed */}
-        <div className="w-96 border-l border-border-subtle overflow-y-auto">
+        {/* Right Column: Activity Feed (narrower) */}
+        <div className="w-72 border-l border-border-subtle overflow-y-auto">
           <ActivityFeed activities={activities} />
         </div>
       </div>

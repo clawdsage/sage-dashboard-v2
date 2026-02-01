@@ -10,10 +10,12 @@ import { useReviewQueue } from '@/hooks/useReviewQueue'
 import { useAgents } from '@/hooks/useAgents'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { usePathname } from 'next/navigation'
 
 const inter = Inter({ subsets: ['latin'] })
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
   const { agents: allAgents } = useAgents()
   const { reviews } = useReviewQueue()
   const activeAgents = allAgents.filter(agent => agent.status === 'active')
@@ -34,15 +36,25 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     },
   })
 
+  // Hide sidebar on Mission Control page
+  const showSidebar = pathname !== '/mission-control'
+
   return (
     <div className="flex h-screen">
-      <Sidebar
-        pendingReviewCount={reviews.length}
-        activeAgentCount={activeCount}
-        todayCost={todayCost}
-      />
+      {showSidebar && (
+        <Sidebar
+          pendingReviewCount={reviews.length}
+          activeAgentCount={activeCount}
+          todayCost={todayCost}
+        />
+      )}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
+        <Header 
+          showHamburger={!showSidebar}
+          pendingReviewCount={reviews.length}
+          activeAgentCount={activeCount}
+          todayCost={todayCost}
+        />
         <main className="flex-1 overflow-auto">
           {children}
         </main>

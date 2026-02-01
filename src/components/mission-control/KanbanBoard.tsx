@@ -77,38 +77,38 @@ export default function KanbanBoard({
   }
 
   return (
-    <div className="h-full p-4">
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-text-primary">Task Board</h2>
-        <p className="text-sm text-text-secondary">Drag and drop tasks between columns</p>
+    <div className="h-full p-3">
+      <div className="mb-3">
+        <h2 className="text-sm font-semibold text-text-primary">Task Board</h2>
+        <p className="text-xs text-text-secondary">Drag and drop between columns</p>
       </div>
 
       <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 h-[calc(100%-4rem)]">
+        <div className="flex gap-2 h-[calc(100%-3rem)]">
           {columns.map((column) => {
             const columnTasks = getTasksByStatus(column.id)
             const stats = getColumnStats(column.id)
 
             return (
-              <div key={column.id} className="flex-1 flex flex-col">
+              <div key={column.id} className="flex-1 flex flex-col min-w-0">
                 {/* Column header */}
-                <div className="mb-3">
+                <div className="mb-2">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className={cn("h-3 w-3 rounded-full", column.color)} />
-                      <h3 className="font-medium text-text-primary">{column.title}</h3>
-                      <span className="text-sm text-text-muted bg-bg-tertiary px-2 py-0.5 rounded">
+                    <div className="flex items-center gap-1.5">
+                      <div className={cn("h-2 w-2 rounded-full", column.color)} />
+                      <h3 className="text-xs font-medium text-text-primary">{column.title}</h3>
+                      <span className="text-[10px] text-text-muted bg-bg-tertiary px-1.5 py-0.5 rounded">
                         {stats.total}
                       </span>
                     </div>
                     {stats.highPriority > 0 && (
-                      <span className="text-xs text-accent-red bg-accent-red/10 px-2 py-0.5 rounded">
-                        {stats.highPriority} high
+                      <span className="text-[10px] text-accent-red bg-accent-red/10 px-1.5 py-0.5 rounded">
+                        {stats.highPriority}
                       </span>
                     )}
                   </div>
                   {stats.assigned > 0 && (
-                    <p className="text-xs text-text-muted mt-1">
+                    <p className="text-[10px] text-text-muted mt-0.5">
                       {stats.assigned} assigned
                     </p>
                   )}
@@ -128,7 +128,7 @@ export default function KanbanBoard({
                         isDragging && "border-accent-blue/50"
                       )}
                     >
-                      <div className="p-2 space-y-2 min-h-[200px]">
+                      <div className="p-1.5 space-y-1.5 min-h-[150px]">
                         {columnTasks.map((task, index) => (
                           <Draggable
                             key={task.id}
@@ -160,13 +160,13 @@ export default function KanbanBoard({
 
                       {/* Empty state */}
                       {columnTasks.length === 0 && !snapshot.isDraggingOver && (
-                        <div className="h-full flex items-center justify-center p-4">
+                        <div className="h-full flex items-center justify-center p-3">
                           <div className="text-center">
-                            <div className="text-2xl mb-2">📋</div>
-                            <p className="text-sm text-text-muted">No tasks</p>
+                            <div className="text-xl mb-1">📋</div>
+                            <p className="text-xs text-text-muted">No tasks</p>
                             {column.id === 'inbox' && (
-                              <p className="text-xs text-text-muted mt-1">
-                                Create a task to get started
+                              <p className="text-[10px] text-text-muted mt-0.5">
+                                Create task to start
                               </p>
                             )}
                           </div>

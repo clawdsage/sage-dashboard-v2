@@ -5,6 +5,7 @@ import { Bell, Search, User, Brain, Code, PenTool, Moon, Rocket, Eye, Bot, BarCh
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { TicketBadge } from '@/components/tickets/TicketBadge'
+import HamburgerMenu from './HamburgerMenu'
 
 const statusIcons: Record<string, React.ReactNode> = {
   thinking: <Brain className="w-4 h-4" />,
@@ -32,7 +33,19 @@ function parseStatusMessage(message: string) {
   return { status, description }
 }
 
-export default function Header() {
+interface HeaderProps {
+  showHamburger?: boolean
+  pendingReviewCount?: number
+  activeAgentCount?: number
+  todayCost?: number
+}
+
+export default function Header({
+  showHamburger = false,
+  pendingReviewCount = 0,
+  activeAgentCount = 0,
+  todayCost = 0
+}: HeaderProps) {
   const [sageStatus, setSageStatus] = useState<{ status: string; description: string } | null>(null)
   const [pendingTickets] = useState(3) // Mock pending count - replace with actual hook
 
@@ -68,9 +81,17 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="bg-bg-secondary border-b border-border-subtle px-6 py-4">
+    <header className="bg-bg-secondary border-b border-border-subtle px-4 py-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3">
+          {/* Hamburger Menu (Mission Control only) */}
+          {showHamburger && (
+            <HamburgerMenu
+              pendingReviewCount={pendingReviewCount}
+              activeAgentCount={activeAgentCount}
+              todayCost={todayCost}
+            />
+          )}
           {/* Main Agent Status - Always visible */}
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border ${sageStatus ? statusColors[sageStatus.status] || statusColors.idle : 'bg-bg-tertiary border-border-subtle'}`}>
             <div className="relative">
