@@ -7,13 +7,15 @@ import {
   BarChart3,
   CheckCircle,
   Activity,
-  DollarSign
+  DollarSign,
+  Satellite
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/Badge'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: Home },
+  { name: 'Mission Control', href: '/mission-control', icon: Satellite },
   { name: 'Agents', href: '/agents', icon: Users },
   { name: 'Projects', href: '/projects', icon: FolderOpen },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },

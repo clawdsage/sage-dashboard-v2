@@ -71,6 +71,73 @@ export interface AgentRun {
   reviewed_by?: string | null
 }
 
+// Mission Control types
+export interface MissionControlAgent {
+  id: string
+  name: string
+  role: string
+  model?: string
+  session_key?: string
+  status: 'idle' | 'active' | 'thinking' | 'blocked'
+  current_task_id?: string
+  avatar: string
+  created_at: string
+  updated_at: string
+}
+
+export interface MissionControlTask {
+  id: string
+  title: string
+  description?: string
+  status: 'inbox' | 'assigned' | 'in_progress' | 'review' | 'done'
+  assignee_ids: string[]
+  created_by: string
+  priority: 'low' | 'medium' | 'high'
+  created_at: string
+  updated_at: string
+  completed_at?: string
+}
+
+export interface MissionControlMessage {
+  id: string
+  task_id: string
+  from_agent_id?: string
+  content: string
+  mentions: string[]
+  created_at: string
+}
+
+export interface MissionControlActivity {
+  id: string
+  type: string
+  agent_id?: string
+  task_id?: string
+  message: string
+  metadata: Record<string, any>
+  created_at: string
+}
+
+export interface CreateTaskForm {
+  title: string
+  description?: string
+  assignee_ids?: string[]
+  priority?: 'low' | 'medium' | 'high'
+}
+
+export interface UpdateTaskForm {
+  title?: string
+  description?: string
+  status?: 'inbox' | 'assigned' | 'in_progress' | 'review' | 'done'
+  assignee_ids?: string[]
+  priority?: 'low' | 'medium' | 'high'
+}
+
+export interface CreateCommentForm {
+  task_id: string
+  content: string
+  from_agent_id?: string
+}
+
 // Activity types
 export interface ActivityLog {
   id: string

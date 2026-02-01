@@ -41,36 +41,39 @@ export type Database = {
       tasks: {
         Row: {
           id: string
-          project_id: string
           title: string
           description: string | null
-          status: string
-          priority: number
-          order_index: number
+          status: 'inbox' | 'assigned' | 'in_progress' | 'review' | 'done'
+          assignee_ids: string[]
+          created_by: string
+          priority: 'low' | 'medium' | 'high'
           created_at: string
           updated_at: string
+          completed_at: string | null
         }
         Insert: {
           id?: string
-          project_id: string
           title: string
           description?: string | null
-          status?: string
-          priority?: number
-          order_index?: number
+          status?: 'inbox' | 'assigned' | 'in_progress' | 'review' | 'done'
+          assignee_ids?: string[]
+          created_by?: string
+          priority?: 'low' | 'medium' | 'high'
           created_at?: string
           updated_at?: string
+          completed_at?: string | null
         }
         Update: {
           id?: string
-          project_id?: string
           title?: string
           description?: string | null
-          status?: string
-          priority?: number
-          order_index?: number
+          status?: 'inbox' | 'assigned' | 'in_progress' | 'review' | 'done'
+          assignee_ids?: string[]
+          created_by?: string
+          priority?: 'low' | 'medium' | 'high'
           created_at?: string
           updated_at?: string
+          completed_at?: string | null
         }
       }
       subagent_runs: {
@@ -412,6 +415,100 @@ export type Database = {
           min_severity?: 'info' | 'warning' | 'critical'
           created_at?: string
           updated_at?: string
+        }
+      }
+      // Mission Control Tables
+      agents: {
+        Row: {
+          id: string
+          name: string
+          role: string
+          model: string
+          session_key: string | null
+          status: 'idle' | 'active' | 'thinking' | 'blocked'
+          current_task_id: string | null
+          avatar: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          role: string
+          model: string
+          session_key?: string | null
+          status?: 'idle' | 'active' | 'thinking' | 'blocked'
+          current_task_id?: string | null
+          avatar?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          role?: string
+          model?: string
+          session_key?: string | null
+          status?: 'idle' | 'active' | 'thinking' | 'blocked'
+          current_task_id?: string | null
+          avatar?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      messages: {
+        Row: {
+          id: string
+          task_id: string
+          from_agent_id: string | null
+          content: string
+          mentions: string[]
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          task_id: string
+          from_agent_id?: string | null
+          content: string
+          mentions?: string[]
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          task_id?: string
+          from_agent_id?: string | null
+          content?: string
+          mentions?: string[]
+          created_at?: string
+        }
+      }
+      activities: {
+        Row: {
+          id: string
+          type: string
+          agent_id: string | null
+          task_id: string | null
+          message: string
+          metadata: Record<string, any>
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          type: string
+          agent_id?: string | null
+          task_id?: string | null
+          message: string
+          metadata?: Record<string, any>
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          type?: string
+          agent_id?: string | null
+          task_id?: string | null
+          message?: string
+          metadata?: Record<string, any>
+          created_at?: string
         }
       }
     }
