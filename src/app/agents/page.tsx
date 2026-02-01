@@ -10,9 +10,7 @@ export default function AgentsPage() {
   const [filter, setFilter] = useState<FilterStatus>('all')
   const [search, setSearch] = useState('')
 
-  const { agents, isLoading, error } = useAgents(
-    filter === 'all' ? undefined : filter
-  )
+  const { agents, isLoading, error } = useAgents()
 
   const filteredAgents = agents.filter(agent =>
     agent.name.toLowerCase().includes(search.toLowerCase()) ||

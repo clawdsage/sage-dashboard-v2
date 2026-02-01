@@ -53,11 +53,19 @@ if (migrationPath) {
     'mission_control_activities'
   ]
   
-  tables.forEach(table => {
-    if (migrationContent.includes(`CREATE TABLE IF NOT EXISTS ${table}`)) {
-      console.log(`  ✅ ${table} table defined`)
+  // Check for table definitions (with or without mission_control_ prefix)
+  const tablePatterns = [
+    { name: 'agents', pattern: /CREATE TABLE IF NOT EXISTS (mission_control_)?agents/i },
+    { name: 'tasks', pattern: /CREATE TABLE IF NOT EXISTS (mission_control_)?tasks/i },
+    { name: 'messages', pattern: /CREATE TABLE IF NOT EXISTS (mission_control_)?messages/i },
+    { name: 'activities', pattern: /CREATE TABLE IF NOT EXISTS (mission_control_)?activities/i }
+  ]
+  
+  tablePatterns.forEach(({ name, pattern }) => {
+    if (pattern.test(migrationContent)) {
+      console.log(`  ✅ ${name} table defined`)
     } else {
-      console.log(`  ❌ ${table} table NOT defined`)
+      console.log(`  ❌ ${name} table NOT defined`)
       allExist = false
     }
   })

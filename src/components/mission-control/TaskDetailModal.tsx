@@ -56,7 +56,7 @@ export default function TaskDetailModal({
       try {
         // Fetch task
         const { data: taskData, error: taskError } = await supabase
-          .from('mission_control_tasks')
+          .from('tasks')
           .select('*')
           .eq('id', taskId)
           .single()
@@ -65,7 +65,7 @@ export default function TaskDetailModal({
 
         // Fetch messages
         const { data: messagesData, error: messagesError } = await supabase
-          .from('mission_control_messages')
+          .from('messages')
           .select('*')
           .eq('task_id', taskId)
           .order('created_at', { ascending: true })
@@ -91,7 +91,7 @@ export default function TaskDetailModal({
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
-        table: 'mission_control_tasks',
+        table: 'tasks',
         filter: `id=eq.${taskId}`
       }, (payload) => {
         setTask(payload.new as MissionControlTask)
@@ -104,7 +104,7 @@ export default function TaskDetailModal({
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
-        table: 'mission_control_messages',
+        table: 'messages',
         filter: `task_id=eq.${taskId}`
       }, () => {
         fetchTaskDetails()

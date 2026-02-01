@@ -27,7 +27,7 @@ export function useMissionControl() {
 
       // Fetch agents
       const { data: agentsData, error: agentsError } = await supabase
-        .from('mission_control_agents')
+        .from('agents')
         .select('*')
         .order('name')
 
@@ -35,7 +35,7 @@ export function useMissionControl() {
 
       // Fetch tasks
       const { data: tasksData, error: tasksError } = await supabase
-        .from('mission_control_tasks')
+        .from('tasks')
         .select('*')
         .order('created_at', { ascending: false })
 
@@ -43,7 +43,7 @@ export function useMissionControl() {
 
       // Fetch activities
       const { data: activitiesData, error: activitiesError } = await supabase
-        .from('mission_control_activities')
+        .from('activities')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50)
@@ -71,7 +71,7 @@ export function useMissionControl() {
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
-        table: 'mission_control_agents'
+        table: 'agents'
       }, () => {
         fetchData()
       })
@@ -83,7 +83,7 @@ export function useMissionControl() {
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
-        table: 'mission_control_tasks'
+        table: 'tasks'
       }, () => {
         fetchData()
       })
@@ -95,7 +95,7 @@ export function useMissionControl() {
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
-        table: 'mission_control_activities'
+        table: 'activities'
       }, () => {
         fetchData()
       })
@@ -112,7 +112,7 @@ export function useMissionControl() {
   const createTask = useCallback(async (taskData: CreateTaskForm) => {
     try {
       const { data, error } = await supabase
-        .from('mission_control_tasks')
+        .from('tasks')
         .insert([{
           title: taskData.title,
           description: taskData.description,
@@ -127,7 +127,7 @@ export function useMissionControl() {
 
       // Log activity
       await supabase
-        .from('mission_control_activities')
+        .from('activities')
         .insert([{
           type: 'task_created',
           task_id: data.id,
@@ -146,7 +146,7 @@ export function useMissionControl() {
   const updateTask = useCallback(async (taskId: string, updates: UpdateTaskForm) => {
     try {
       const { data, error } = await supabase
-        .from('mission_control_tasks')
+        .from('tasks')
         .update(updates)
         .eq('id', taskId)
         .select()
@@ -157,7 +157,7 @@ export function useMissionControl() {
       // Log activity
       const activityType = updates.status === 'done' ? 'task_completed' : 'task_updated'
       await supabase
-        .from('mission_control_activities')
+        .from('activities')
         .insert([{
           type: activityType,
           task_id: taskId,
@@ -176,7 +176,7 @@ export function useMissionControl() {
   const deleteTask = useCallback(async (taskId: string) => {
     try {
       const { error } = await supabase
-        .from('mission_control_tasks')
+        .from('tasks')
         .delete()
         .eq('id', taskId)
 
@@ -184,7 +184,7 @@ export function useMissionControl() {
 
       // Log activity
       await supabase
-        .from('mission_control_activities')
+        .from('activities')
         .insert([{
           type: 'task_deleted',
           message: `Task deleted`,
@@ -213,7 +213,7 @@ export function useMissionControl() {
       }
 
       const { data, error } = await supabase
-        .from('mission_control_messages')
+        .from('messages')
         .insert([{
           task_id: taskId,
           from_agent_id: fromAgentId,
@@ -227,7 +227,7 @@ export function useMissionControl() {
 
       // Log activity
       await supabase
-        .from('mission_control_activities')
+        .from('activities')
         .insert([{
           type: 'comment_posted',
           task_id: taskId,
@@ -247,7 +247,7 @@ export function useMissionControl() {
   const updateAgentStatus = useCallback(async (agentId: string, status: MissionControlAgent['status'], currentTaskId?: string) => {
     try {
       const { data, error } = await supabase
-        .from('mission_control_agents')
+        .from('agents')
         .update({
           status,
           current_task_id: currentTaskId
@@ -264,7 +264,7 @@ export function useMissionControl() {
                           status === 'thinking' ? 'agent_thinking' : 'agent_blocked'
       
       await supabase
-        .from('mission_control_activities')
+        .from('activities')
         .insert([{
           type: activityType,
           agent_id: agentId,

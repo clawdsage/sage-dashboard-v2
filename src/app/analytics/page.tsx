@@ -32,7 +32,7 @@ export default function AnalyticsPage() {
         type: 'cost' as const,
         title: 'High Cost Runs Detected',
         description: `${highCostRuns.length} runs exceeded $1.00 cost threshold`,
-        severity: highCostRuns.length > 3 ? 'high' : 'medium',
+        severity: (highCostRuns.length > 3 ? 'high' : 'medium') as 'high' | 'medium',
         timestamp: now,
         resolved: false,
         data: {
@@ -51,7 +51,7 @@ export default function AnalyticsPage() {
         type: 'error' as const,
         title: 'Failed Runs Detected',
         description: `${failedRuns.count} run${failedRuns.count !== 1 ? 's' : ''} failed in the selected period`,
-        severity: failedRuns.count > 5 ? 'high' : 'medium',
+        severity: (failedRuns.count > 5 ? 'high' : 'medium') as 'high' | 'medium',
         timestamp: now,
         resolved: false,
         data: {
@@ -71,7 +71,7 @@ export default function AnalyticsPage() {
           type: 'cost' as const,
           title: 'Cost Spike Detected',
           description: `Cost increased by ${((currentDay.cost / prevDay.cost - 1) * 100).toFixed(0)}% from previous day`,
-          severity: 'high',
+          severity: 'high' as const,
           timestamp: now,
           resolved: false,
           data: {
@@ -100,7 +100,7 @@ export default function AnalyticsPage() {
         type: 'cost' as const,
         title: 'High Average Cost Per Run',
         description: `Average cost per run is $${avgCostPerRun.toFixed(4)}, consider optimizing expensive models`,
-        impact: 'negative',
+        impact: 'negative' as const,
         confidence: 'high',
         data: {
           avgCost: avgCostPerRun.toFixed(4),
@@ -124,7 +124,7 @@ export default function AnalyticsPage() {
           type: 'usage' as const,
           title: 'High Model Concentration',
           description: `${topModel.model} accounts for ${topModelPercentage.toFixed(0)}% of total cost`,
-          impact: 'neutral',
+          impact: 'neutral' as const,
           confidence: 'high',
           data: {
             model: topModel.model,
@@ -149,7 +149,7 @@ export default function AnalyticsPage() {
         type: 'efficiency' as const,
         title: 'Token Cost Efficiency',
         description: `Average cost per token is $${avgCostPerToken.toFixed(8)}, consider optimizing token usage`,
-        impact: 'negative',
+        impact: 'negative' as const,
         confidence: 'medium',
         data: {
           avgTokensPerRun: Math.round(avgTokensPerRun).toLocaleString(),
@@ -175,7 +175,7 @@ export default function AnalyticsPage() {
           type: 'trend' as const,
           title: 'Cost Reduction Trend',
           description: 'Cost has decreased by over 30% in the last 3 days compared to previous 3 days',
-          impact: 'positive',
+          impact: 'positive' as const,
           confidence: 'medium',
           data: {
             firstHalf: `$${firstHalf.toFixed(4)}`,
