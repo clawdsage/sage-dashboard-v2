@@ -43,7 +43,7 @@ export function AgentTable({ data, isLoading = false, onExport, onRowClick }: Ag
     const matchesSearch = search === '' || 
       run.name?.toLowerCase().includes(search.toLowerCase()) ||
       run.model?.toLowerCase().includes(search.toLowerCase()) ||
-      run.task?.toLowerCase().includes(search.toLowerCase())
+      run.task_description?.toLowerCase().includes(search.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || run.status === statusFilter
     
@@ -256,8 +256,8 @@ export function AgentTable({ data, isLoading = false, onExport, onRowClick }: Ag
                 >
                   <td className="py-3 px-2">
                     <div className="font-medium truncate max-w-xs">{run.name || 'Unnamed'}</div>
-                    {run.task && (
-                      <div className="text-xs text-text-muted truncate max-w-xs">{run.task}</div>
+                    {run.task_description && (
+                      <div className="text-xs text-text-muted truncate max-w-xs">{run.task_description}</div>
                     )}
                   </td>
                   <td className="py-3 px-2">

@@ -42,7 +42,7 @@ export default function MissionControlPage() {
 
   const handleTaskMoved = async (taskId: string, newStatus: string, newAssigneeIds?: string[]) => {
     await updateTask(taskId, { 
-      status: newStatus,
+      status: newStatus as 'inbox' | 'assigned' | 'in_progress' | 'review' | 'done',
       ...(newAssigneeIds && { assigneeIds: newAssigneeIds })
     })
   }
@@ -69,7 +69,7 @@ export default function MissionControlPage() {
           <div className="text-red-500 text-2xl mb-4">⚠️</div>
           <h3 className="text-lg font-medium text-text-primary mb-2">Error Loading Mission Control</h3>
           <p className="text-text-secondary mb-4">{error}</p>
-          <Button variant="primary" onClick={() => window.location.reload()}>
+          <Button variant="default" onClick={() => window.location.reload()}>
             Retry
           </Button>
         </div>
@@ -87,7 +87,7 @@ export default function MissionControlPage() {
             <p className="text-text-secondary mt-1">Coordinate your AI agent squad in real-time</p>
           </div>
           <Button
-            variant="primary"
+            variant="default"
             onClick={() => setIsCreateTaskModalOpen(true)}
             className="flex items-center gap-2"
           >

@@ -101,7 +101,7 @@ export default function AnalyticsPage() {
         title: 'High Average Cost Per Run',
         description: `Average cost per run is $${avgCostPerRun.toFixed(4)}, consider optimizing expensive models`,
         impact: 'negative' as const,
-        confidence: 'high',
+        confidence: 'high' as const,
         data: {
           avgCost: avgCostPerRun.toFixed(4),
           totalRuns: data.totalRuns
@@ -125,7 +125,7 @@ export default function AnalyticsPage() {
           title: 'High Model Concentration',
           description: `${topModel.model} accounts for ${topModelPercentage.toFixed(0)}% of total cost`,
           impact: 'neutral' as const,
-          confidence: 'high',
+          confidence: 'high' as const,
           data: {
             model: topModel.model,
             percentage: `${topModelPercentage.toFixed(0)}%`,
@@ -150,7 +150,7 @@ export default function AnalyticsPage() {
         title: 'Token Cost Efficiency',
         description: `Average cost per token is $${avgCostPerToken.toFixed(8)}, consider optimizing token usage`,
         impact: 'negative' as const,
-        confidence: 'medium',
+        confidence: 'medium' as const,
         data: {
           avgTokensPerRun: Math.round(avgTokensPerRun).toLocaleString(),
           avgCostPerToken: avgCostPerToken.toFixed(8),
@@ -176,7 +176,7 @@ export default function AnalyticsPage() {
           title: 'Cost Reduction Trend',
           description: 'Cost has decreased by over 30% in the last 3 days compared to previous 3 days',
           impact: 'positive' as const,
-          confidence: 'medium',
+          confidence: 'medium' as const,
           data: {
             firstHalf: `$${firstHalf.toFixed(4)}`,
             secondHalf: `$${secondHalf.toFixed(4)}`,
