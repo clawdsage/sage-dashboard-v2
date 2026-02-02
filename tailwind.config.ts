@@ -14,26 +14,26 @@ const config: Config = {
       },
       colors: {
         bg: {
-          primary: '#0a0a0b',
-          secondary: '#111113',
-          tertiary: '#1a1a1d',
-          elevated: '#222225',
+          primary: '#FAF8F5',
+          secondary: '#F5F3F0',
+          tertiary: '#EDEAE6',
+          elevated: '#FFFFFF',
         },
         text: {
-          primary: '#fafafa',
-          secondary: '#a1a1aa',
-          muted: '#71717a',
+          primary: '#2C2C2C',
+          secondary: '#666666',
+          muted: '#999999',
         },
         border: {
-          subtle: '#27272a',
-          default: '#3f3f46',
+          subtle: '#E5E3DF',
+          default: '#D1CEC9',
         },
         accent: {
           blue: '#3b82f6',
           green: '#22c55e',
-          amber: '#f59e0b',
-          red: '#ef4444',
-          purple: '#a855f7',
+          amber: '#F97316',
+          red: '#EF4444',
+          purple: '#A855F7',
         },
       },
       fontSize: {
@@ -72,10 +72,10 @@ const config: Config = {
         full: '9999px',
       },
       boxShadow: {
-        sm: '0 1px 2px rgba(0,0,0,0.3)',
-        md: '0 4px 6px rgba(0,0,0,0.4)',
-        lg: '0 10px 15px rgba(0,0,0,0.5)',
-        glow: '0 0 20px rgba(59,130,246,0.3)',
+        sm: '0 1px 2px rgba(0,0,0,0.06)',
+        md: '0 4px 6px rgba(0,0,0,0.08)',
+        lg: '0 10px 15px rgba(0,0,0,0.1)',
+        glow: '0 0 20px rgba(249,115,22,0.15)',
       },
       backgroundImage: {
         'gradient-blue': 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
