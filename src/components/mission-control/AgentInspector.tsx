@@ -63,9 +63,21 @@ export default function AgentInspector({ agent, onClose }: AgentInspectorProps) 
               <div className="text-sm font-semibold text-text-primary truncate">{agent.avatar} {agent.name}</div>
               <div className="text-[11px] text-text-secondary truncate">{agent.role}</div>
             </div>
-            <button onClick={onClose} className="p-2 rounded-md hover:bg-bg-tertiary">
-              <X className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setTab('archive')
+                  setSelectedRunId(null)
+                }}
+                className="text-[12px] px-2 py-1 rounded-md border border-border-subtle bg-bg-elevated hover:bg-bg-tertiary"
+                title="Back to list"
+              >
+                Back
+              </button>
+              <button onClick={onClose} className="p-2 rounded-md hover:bg-bg-tertiary" title="Close">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
           {/* tabs/actions */}
