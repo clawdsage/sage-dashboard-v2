@@ -48,11 +48,18 @@ export default function AgentColumn({ agents, onAgentStatusChange }: AgentColumn
     }
   }
 
+  // Sort agents: Wilson first, then the rest
+  const sortedAgents = [...agents].sort((a, b) => {
+    if (a.name === 'Wilson') return -1
+    if (b.name === 'Wilson') return 1
+    return 0
+  })
+
   return (
     <div className="p-3">
       <h2 className="text-sm font-semibold text-text-primary mb-3">Agent Squad</h2>
       <div className="space-y-2">
-        {agents.map((agent) => {
+        {sortedAgents.map((agent) => {
           const status = statusConfig[agent.status]
           const StatusIcon = status.icon
           
