@@ -5,11 +5,12 @@ import AgentCard from './AgentCard'
 
 interface AgentColumnProps {
   agents: MissionControlAgent[]
+  onOpenInspector: (agent: MissionControlAgent) => void
   // keeping prop for now so callers don't break; AgentColumn is read-only
   onAgentStatusChange?: (agentId: string, status: MissionControlAgent['status'], currentTaskId?: string) => Promise<void>
 }
 
-export default function AgentColumn({ agents }: AgentColumnProps) {
+export default function AgentColumn({ agents, onOpenInspector }: AgentColumnProps) {
 
   // Sort agents: Wilson first, then the rest
   const sortedAgents = [...agents].sort((a, b) => {
@@ -23,7 +24,7 @@ export default function AgentColumn({ agents }: AgentColumnProps) {
       <h2 className="text-sm font-semibold text-text-primary mb-3">Agent Squad</h2>
       <div className="space-y-2">
         {sortedAgents.map((agent) => (
-          <AgentCard key={agent.id} agent={agent} />
+          <AgentCard key={agent.id} agent={agent} onOpenInspector={onOpenInspector} />
         ))}
       </div>
 

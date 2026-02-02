@@ -1,14 +1,13 @@
 'use client'
 
-import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { ChevronDown, ChevronUp, Copy, Download, Activity, Clock, Cpu } from 'lucide-react'
+import { ChevronRight, Activity, Clock, Cpu } from 'lucide-react'
 import { MissionControlAgent } from '@/types'
 import { useAgentRuns } from '@/hooks/useAgentRuns'
-import { useAgentRunEvents } from '@/hooks/useAgentRunEvents'
 
 interface AgentCardProps {
   agent: MissionControlAgent
+  onOpenInspector: (agent: MissionControlAgent) => void
 }
 
 const statusConfig = {
@@ -58,20 +57,10 @@ function formatBottomLine(params: {
   return 'Archive'
 }
 
-export default function AgentCard({ agent }: AgentCardProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [tab, setTab] = useState<'live' | 'archive'>('live')
-  const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
+export default function AgentCard({ agent, onOpenInspector }: AgentCardProps) {
+  // drawer handles detail view; card only shows summary
 
   const { runs, activeRun, lastRun } = useAgentRuns(agent.id)
-
-  const effectiveRunId = useMemo(() => {
-    if (activeRun?.id) return activeRun.id
-    if (selectedRunId) return selectedRunId
-    return lastRun?.id
-  }, [activeRun?.id, selectedRunId, lastRun?.id])
-
-  const { events } = useAgentRunEvents(effectiveRunId)
 
   const cfg = statusConfig[agent.status]
 
@@ -83,44 +72,6 @@ export default function AgentCard({ agent }: AgentCardProps) {
   })
 
   const bottomIsArchive = bottomLine === 'Archive'
-
-  const onToggle = () => {
-    setIsOpen(v => !v)
-    // Default tab behavior
-    if (activeRun) setTab('live')
-    else setTab('archive')
-  }
-
-  const copyCleanLog = async () => {
-    const text = events
-      .map(e => {
-        const t = new Date(e.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        return `${t}  ${e.verb}  ${e.message}`
-      })
-      .join('\n')
-
-    try {
-      await navigator.clipboard.writeText(text)
-    } catch {
-      // ignore
-    }
-  }
-
-  const exportCleanLog = () => {
-    const text = events
-      .map(e => {
-        const t = new Date(e.created_at).toISOString()
-        return `${t}\t${e.level}\t${e.verb}\t${e.message}`
-      })
-      .join('\n')
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${agent.name}-log.txt`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
 
   return (
     <div className={cn('rounded-lg border border-border-subtle bg-bg-elevated shadow-sm')}> 
@@ -155,7 +106,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
       {/* Bottom cell (Working / Last / Archive) */}
       <button
         type="button"
-        onClick={onToggle}
+        onClick={() => onOpenInspector(agent)}
         className={cn(
           'w-full border-t border-border-subtle px-2.5 py-2 text-left',
           'hover:bg-bg-secondary transition-colors'
@@ -172,130 +123,9 @@ export default function AgentCard({ agent }: AgentCardProps) {
               </div>
             )}
           </div>
-          {isOpen ? <ChevronUp className="h-4 w-4 text-text-muted" /> : <ChevronDown className="h-4 w-4 text-text-muted" />}
+          <ChevronRight className="h-4 w-4 text-text-muted" />
         </div>
       </button>
-
-      {/* Collapsible panel */}
-      {isOpen && (
-        <div className="border-t border-border-subtle">
-          {/* Tabs + actions */}
-          <div className="flex items-center justify-between px-2.5 py-2 bg-bg-secondary">
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setTab('live')}
-                className={cn(
-                  'text-[11px] px-2 py-1 rounded-md',
-                  tab === 'live' ? 'bg-bg-elevated border border-border-subtle text-text-primary' : 'text-text-secondary hover:text-text-primary'
-                )}
-              >
-                Live
-              </button>
-              <button
-                onClick={() => setTab('archive')}
-                className={cn(
-                  'text-[11px] px-2 py-1 rounded-md',
-                  tab === 'archive' ? 'bg-bg-elevated border border-border-subtle text-text-primary' : 'text-text-secondary hover:text-text-primary'
-                )}
-              >
-                Archive
-              </button>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <button
-                onClick={copyCleanLog}
-                className="p-1.5 rounded-md hover:bg-bg-tertiary text-text-muted"
-                title="Copy log"
-              >
-                <Copy className="h-3.5 w-3.5" />
-              </button>
-              <button
-                onClick={exportCleanLog}
-                className="p-1.5 rounded-md hover:bg-bg-tertiary text-text-muted"
-                title="Export log"
-              >
-                <Download className="h-3.5 w-3.5" />
-              </button>
-              <button
-                disabled
-                className="p-1.5 rounded-md text-text-muted opacity-50 cursor-not-allowed"
-                title="View raw (coming soon)"
-              >
-                Raw
-              </button>
-            </div>
-          </div>
-
-          {tab === 'live' && (
-            <div className="px-2.5 py-2">
-              {!effectiveRunId ? (
-                <div className="text-[11px] text-text-muted">No run selected.</div>
-              ) : events.length === 0 ? (
-                <div className="text-[11px] text-text-muted">No events yet.</div>
-              ) : (
-                <div className="max-h-40 overflow-y-auto space-y-1">
-                  {events.slice(-80).map((e) => (
-                    <div key={e.id} className="flex gap-2 text-[11px]">
-                      <span className="text-text-muted shrink-0 w-12">
-                        {new Date(e.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      <span className="text-text-secondary shrink-0 w-20 truncate">{e.verb}</span>
-                      <span className={cn('text-text-primary', e.level === 'error' && 'text-accent-red')}>
-                        {e.message}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {tab === 'archive' && (
-            <div className="px-2.5 py-2">
-              {runs.length === 0 ? (
-                <div className="text-[11px] text-text-muted">No archived runs yet.</div>
-              ) : (
-                <div className="space-y-1">
-                  {runs.slice(0, 10).map((r) => (
-                    <button
-                      key={r.id}
-                      className={cn(
-                        'w-full text-left p-2 rounded-md border border-border-subtle hover:bg-bg-secondary',
-                        effectiveRunId === r.id && 'bg-bg-secondary'
-                      )}
-                      onClick={() => {
-                        setSelectedRunId(r.id)
-                        setTab('live')
-                      }}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="min-w-0">
-                          <div className="text-[11px] font-medium text-text-primary truncate">
-                            {r.title || r.last_line || 'Run'}
-                          </div>
-                          <div className="text-[10px] text-text-muted">
-                            {new Date(r.started_at).toLocaleString()}
-                          </div>
-                        </div>
-                        <span className={cn(
-                          'text-[10px] px-1.5 py-0.5 rounded-full border',
-                          r.status === 'completed' && 'border-accent-green/20 text-accent-green',
-                          r.status === 'failed' && 'border-accent-red/30 text-accent-red',
-                          r.status === 'running' && 'border-accent-amber/30 text-accent-amber',
-                          (r.status === 'cancelled') && 'border-border-subtle text-text-muted'
-                        )}>
-                          {r.status}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }

@@ -6,6 +6,7 @@ import KanbanBoard from '@/components/mission-control/KanbanBoard'
 import ActivityFeed from '@/components/mission-control/ActivityFeed'
 import CreateTaskModal from '@/components/mission-control/CreateTaskModal'
 import TaskDetailModal from '@/components/mission-control/TaskDetailModal'
+import AgentInspector from '@/components/mission-control/AgentInspector'
 import { useMissionControl } from '@/hooks/useMissionControl'
 import { Button } from '@/components/ui/Button'
 import { Plus } from 'lucide-react'
@@ -13,6 +14,7 @@ import { Plus } from 'lucide-react'
 export default function MissionControlPage() {
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
+  const [inspectorAgentId, setInspectorAgentId] = useState<string | null>(null)
   
   const {
     agents,
@@ -104,18 +106,28 @@ export default function MissionControlPage() {
           <AgentColumn 
             agents={agents}
             onAgentStatusChange={updateAgentStatus}
+            onOpenInspector={(agent) => setInspectorAgentId(agent.id)}
           />
         </div>
 
-        {/* Center Column: Kanban Board */}
-        <div className="flex-1 overflow-y-auto">
-          <KanbanBoard
-            tasks={tasks}
-            agents={agents}
-            onTaskClick={handleTaskClick}
-            onTaskMoved={handleTaskMoved}
-            onTaskUpdated={handleTaskUpdated}
-          />
+        {/* Center Column: Kanban Board (covered by inspector when open) */}
+        <div className="flex-1 overflow-hidden relative">
+          <div className="h-full overflow-y-auto">
+            <KanbanBoard
+              tasks={tasks}
+              agents={agents}
+              onTaskClick={handleTaskClick}
+              onTaskMoved={handleTaskMoved}
+              onTaskUpdated={handleTaskUpdated}
+            />
+          </div>
+
+          {inspectorAgentId && agents.find(a => a.id === inspectorAgentId) && (
+            <AgentInspector
+              agent={agents.find(a => a.id === inspectorAgentId)!}
+              onClose={() => setInspectorAgentId(null)}
+            />
+          )}
         </div>
 
         {/* Right Column: Activity Feed (narrower) */}
