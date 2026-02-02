@@ -224,10 +224,10 @@ export default function TaskDetailModal({
   ]
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-bg-primary rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-0 md:p-4">
+      <div className="bg-bg-primary w-full h-full md:h-auto md:rounded-lg md:max-w-4xl md:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-border-subtle">
+        <div className="p-4 md:p-6 border-b border-border-subtle">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               {isEditing ? (
@@ -296,25 +296,28 @@ export default function TaskDetailModal({
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-hidden flex">
+        <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
           {/* Left Column - Task Details */}
-          <div className="w-2/3 border-r border-border-subtle overflow-y-auto">
-            <div className="p-6 space-y-6">
+          <div className="w-full md:w-2/3 md:border-r border-border-subtle overflow-y-auto">
+            <div className="p-4 md:p-6 space-y-6">
               {/* Status and Priority */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-sm font-medium text-text-primary mb-2">Status</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">
                     {statusOptions.map((option) => (
                       <Button
                         key={option.value}
-                        variant={task.status === option.value ? 'primary' : 'secondary'}
+                        variant={task.status === option.value ? 'default' : 'secondary'}
                         size="sm"
                         onClick={() => handleStatusChange(option.value as any)}
                         className={cn(
-                          "transition-all",
-                          task.status === option.value && option.value === 'done' && "bg-accent-green hover:bg-accent-green/90",
-                          task.status === option.value && option.value === 'in_progress' && "bg-accent-amber hover:bg-accent-amber/90"
+                          'transition-all',
+                          task.status === option.value && option.value === 'inbox' && 'bg-gray-500 text-white hover:bg-gray-500/90',
+                          task.status === option.value && option.value === 'assigned' && 'bg-accent-blue text-white hover:bg-accent-blue/90',
+                          task.status === option.value && option.value === 'in_progress' && 'bg-accent-amber text-white hover:bg-accent-amber/90',
+                          task.status === option.value && option.value === 'review' && 'bg-accent-purple text-white hover:bg-accent-purple/90',
+                          task.status === option.value && option.value === 'done' && 'bg-accent-green text-white hover:bg-accent-green/90'
                         )}
                       >
                         {option.label}
@@ -386,8 +389,8 @@ export default function TaskDetailModal({
           </div>
 
           {/* Right Column - Comments */}
-          <div className="w-1/3 flex flex-col">
-            <div className="p-6 border-b border-border-subtle">
+          <div className="w-full md:w-1/3 flex flex-col border-t md:border-t-0 border-border-subtle">
+            <div className="p-4 md:p-6 border-b border-border-subtle">
               <h3 className="text-lg font-semibold text-text-primary">Comments</h3>
               <p className="text-sm text-text-secondary mt-1">
                 {messages.length} message{messages.length !== 1 ? 's' : ''}
@@ -395,7 +398,7 @@ export default function TaskDetailModal({
             </div>
 
             {/* Comments List */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6">
               {messages.length === 0 ? (
                 <div className="text-center py-8">
                   <MessageSquare className="h-12 w-12 text-text-muted mx-auto mb-3" />
@@ -456,7 +459,7 @@ export default function TaskDetailModal({
             </div>
 
             {/* Comment Input */}
-            <div className="p-6 border-t border-border-subtle">
+            <div className="p-4 md:p-6 border-t border-border-subtle">
               <div className="space-y-3">
                 <Textarea
                   value={newComment}
@@ -477,7 +480,7 @@ export default function TaskDetailModal({
                     className="flex items-center gap-2"
                   >
                     <Send className="h-4 w-4" />
-                    Send
+                    <span className="hidden sm:inline">Send</span>
                   </Button>
                 </div>
               </div>
