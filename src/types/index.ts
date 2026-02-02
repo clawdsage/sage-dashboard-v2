@@ -117,6 +117,32 @@ export interface MissionControlActivity {
   created_at: string
 }
 
+export interface MissionControlAgentRun {
+  id: string
+  agent_id: string
+  task_id?: string
+  session_key?: string
+  status: 'running' | 'completed' | 'failed' | 'cancelled'
+  title?: string
+  summary?: string
+  last_line?: string
+  started_at: string
+  ended_at?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface MissionControlAgentRunEvent {
+  id: string
+  run_id: string
+  agent_id: string
+  task_id?: string
+  level: 'info' | 'warn' | 'error'
+  verb: string
+  message: string
+  created_at: string
+}
+
 export interface CreateTaskForm {
   title: string
   description?: string
