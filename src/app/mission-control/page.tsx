@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import AgentColumn from '@/components/mission-control/AgentColumn'
 import KanbanBoard from '@/components/mission-control/KanbanBoard'
+import MobileTaskBoard from '@/components/mission-control/MobileTaskBoard'
 import ActivityFeed from '@/components/mission-control/ActivityFeed'
 import CreateTaskModal from '@/components/mission-control/CreateTaskModal'
 import TaskDetailModal from '@/components/mission-control/TaskDetailModal'
@@ -138,20 +139,37 @@ export default function MissionControlPage() {
         {/* Center Column: Kanban Board */}
         <div className={`flex-1 overflow-hidden relative ${mobileView === 'board' ? 'block' : 'hidden'} md:block`}>
           <div className="h-full overflow-y-auto">
-            <KanbanBoard
-              tasks={tasks}
-              agents={agents}
-              onTaskClick={handleTaskClick}
-              onTaskMoved={handleTaskMoved}
-              onTaskUpdated={handleTaskUpdated}
-            />
+            {/* Desktop kanban */}
+            <div className="hidden md:block h-full">
+              <KanbanBoard
+                tasks={tasks}
+                agents={agents}
+                onTaskClick={handleTaskClick}
+                onTaskMoved={handleTaskMoved}
+                onTaskUpdated={handleTaskUpdated}
+              />
+            </div>
+
+            {/* Mobile board (single column, swipe/picker style) */}
+            <div className="md:hidden h-full">
+              <MobileTaskBoard
+                tasks={tasks}
+                agents={agents}
+                onTaskClick={handleTaskClick}
+                onTaskUpdated={handleTaskUpdated}
+              />
+            </div>
           </div>
 
+          {/* Desktop-only inspector overlays the board */}
           {inspectorAgentId && agents.find(a => a.id === inspectorAgentId) && (
-            <AgentInspector
-              agent={agents.find(a => a.id === inspectorAgentId)!}
-              onClose={() => setInspectorAgentId(null)}
-            />
+            <div className="hidden md:block">
+              <AgentInspector
+                mode="desktop"
+                agent={agents.find(a => a.id === inspectorAgentId)!}
+                onClose={() => setInspectorAgentId(null)}
+              />
+            </div>
           )}
         </div>
 
@@ -160,6 +178,17 @@ export default function MissionControlPage() {
           <ActivityFeed activities={activities} />
         </div>
       </div>
+
+      {/* Mobile-only inspector (full-screen overlay) */}
+      {inspectorAgentId && agents.find(a => a.id === inspectorAgentId) && (
+        <div className="md:hidden">
+          <AgentInspector
+            mode="mobile"
+            agent={agents.find(a => a.id === inspectorAgentId)!}
+            onClose={() => setInspectorAgentId(null)}
+          />
+        </div>
+      )}
 
       {/* Modals */}
       <CreateTaskModal
