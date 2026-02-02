@@ -15,6 +15,7 @@ export default function MissionControlPage() {
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [inspectorAgentId, setInspectorAgentId] = useState<string | null>(null)
+  const [mobileView, setMobileView] = useState<'agents' | 'board' | 'feed'>('agents')
   
   const {
     agents,
@@ -99,10 +100,34 @@ export default function MissionControlPage() {
         </div>
       </div>
 
-      {/* Main Content - Compact Three Column Layout */}
+      {/* Mobile segmented nav */}
+      <div className="md:hidden px-3 py-2 border-b border-border-subtle bg-bg-secondary">
+        <div className="grid grid-cols-3 gap-1 bg-bg-tertiary p-1 rounded-lg">
+          <button
+            onClick={() => setMobileView('agents')}
+            className={`text-xs py-2 rounded-md ${mobileView === 'agents' ? 'bg-bg-elevated border border-border-subtle' : 'text-text-secondary'}`}
+          >
+            Agents
+          </button>
+          <button
+            onClick={() => setMobileView('board')}
+            className={`text-xs py-2 rounded-md ${mobileView === 'board' ? 'bg-bg-elevated border border-border-subtle' : 'text-text-secondary'}`}
+          >
+            Board
+          </button>
+          <button
+            onClick={() => setMobileView('feed')}
+            className={`text-xs py-2 rounded-md ${mobileView === 'feed' ? 'bg-bg-elevated border border-border-subtle' : 'text-text-secondary'}`}
+          >
+            Feed
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Column: Agent Cards (narrower) */}
-        <div className="w-64 border-r border-border-subtle overflow-y-auto">
+        {/* Left Column: Agent Cards */}
+        <div className={`w-64 border-r border-border-subtle overflow-y-auto ${mobileView === 'agents' ? 'block' : 'hidden'} md:block`}>
           <AgentColumn 
             agents={agents}
             onAgentStatusChange={updateAgentStatus}
@@ -110,8 +135,8 @@ export default function MissionControlPage() {
           />
         </div>
 
-        {/* Center Column: Kanban Board (covered by inspector when open) */}
-        <div className="flex-1 overflow-hidden relative">
+        {/* Center Column: Kanban Board */}
+        <div className={`flex-1 overflow-hidden relative ${mobileView === 'board' ? 'block' : 'hidden'} md:block`}>
           <div className="h-full overflow-y-auto">
             <KanbanBoard
               tasks={tasks}
@@ -130,8 +155,8 @@ export default function MissionControlPage() {
           )}
         </div>
 
-        {/* Right Column: Activity Feed (narrower) */}
-        <div className="w-72 border-l border-border-subtle overflow-y-auto">
+        {/* Right Column: Activity Feed */}
+        <div className={`w-72 border-l border-border-subtle overflow-y-auto ${mobileView === 'feed' ? 'block' : 'hidden'} md:block`}>
           <ActivityFeed activities={activities} />
         </div>
       </div>

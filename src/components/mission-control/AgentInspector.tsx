@@ -55,7 +55,7 @@ export default function AgentInspector({ agent, onClose }: AgentInspectorProps) 
       <div className="absolute inset-0 bg-bg-primary/60 backdrop-blur-sm" onClick={onClose} />
 
       {/* panel */}
-      <div className="absolute inset-y-0 left-0 w-[70%] min-w-[320px] max-w-[720px] bg-bg-elevated border-r border-border-subtle shadow-lg animate-in slide-in-from-left duration-200">
+      <div className="absolute inset-y-0 left-0 w-full md:w-[70%] min-w-[320px] max-w-[720px] bg-bg-elevated border-r border-border-subtle shadow-lg animate-in slide-in-from-left duration-200">
         <div className="h-full flex flex-col">
           {/* header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle bg-bg-secondary">
