@@ -36,8 +36,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     },
   })
 
-  // Hide sidebar on Mission Control page
-  const showSidebar = pathname !== '/mission-control'
+  // Hide sidebar on Mission Control + Crabwalk (graph needs full width)
+  const showSidebar = !['/mission-control', '/crabwalk'].includes(pathname)
 
   return (
     <div className="flex h-screen">
